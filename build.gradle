@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+}
+
+group 'cn.evolvefield.bot.onebot-sdk'
+version '0.1.0'
+
+java {
+    archivesBaseName = 'OneBot-SDK'
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.24'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'org.slf4j:slf4j-api:1.8.0-beta4'
+    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation 'org.slf4j:slf4j-simple:1.7.30'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.1'
+
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'com.google.code.gson:gson:2.9.0'
+    annotationProcessor 'org.slf4j:slf4j-api:1.8.0-beta4'
+    annotationProcessor 'org.jetbrains:annotations:20.1.0'
+    annotationProcessor 'org.slf4j:slf4j-simple:1.7.30'
+    annotationProcessor 'org.java-websocket:Java-WebSocket:1.5.1'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
