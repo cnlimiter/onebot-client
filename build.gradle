@@ -1,13 +1,29 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'cn.evolvefield.bot.onebot-sdk'
 version '0.1.2'
+version = project.sdk_version
+group = project.maven_group
+
+def targetJavaVersion = 17
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        it.options.release = targetJavaVersion
+    }
+}
 
 java {
-    archivesBaseName = 'OneBot-SDK'
-    toolchain.languageVersion = JavaLanguageVersion.of(17)
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+    archivesBaseName = project.archives_base_name
+
 }
 
 repositories {
@@ -31,11 +47,17 @@ dependencies {
 
 }
 
-//test {
-//    useJUnitPlatform()
-//}
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+
+    }
 }
-
