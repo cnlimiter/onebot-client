@@ -3,8 +3,6 @@ plugins {
     id 'maven-publish'
 }
 
-group 'cn.evolvefield.bot.onebot-sdk'
-version '0.1.2'
 version = project.sdk_version
 group = project.maven_group
 
