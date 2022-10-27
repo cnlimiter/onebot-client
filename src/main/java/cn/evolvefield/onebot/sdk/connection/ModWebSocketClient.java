@@ -1,13 +1,11 @@
 package cn.evolvefield.onebot.sdk.connection;
 
+import cn.evolvefield.onebot.sdk.config.BotConfig;
 import cn.evolvefield.onebot.sdk.core.Bot;
 import cn.evolvefield.onebot.sdk.handler.ActionHandler;
 import cn.evolvefield.onebot.sdk.util.ReSchedulableTimerTask;
 import cn.evolvefield.onebot.sdk.util.json.util.JsonsObject;
 import com.google.gson.JsonObject;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
@@ -34,15 +32,13 @@ public class ModWebSocketClient extends WebSocketClient implements Connection {
     private final double reconnectDecay = 1.5;
 
     private int reconnectAttempts = 0;
-    @Getter
-    @Setter
-    public int maxReconnectAttempts = 20;
+
+    private final int maxReconnectAttempts;
 
     /*
     断线重连
      */
-    @Setter
-    public boolean reconnect = true;
+    private final boolean reconnect;
 
     private Timer reconnectTimer;
 
@@ -61,10 +57,12 @@ public class ModWebSocketClient extends WebSocketClient implements Connection {
     private final ActionHandler actionHandler;
     private int sendFlag = 0;
     private String result = null;
-    public ModWebSocketClient(URI serverUri, BlockingQueue<String> queue, ActionHandler actionHandler) {
-        super(serverUri);
+    public ModWebSocketClient(BotConfig config, URI uri, BlockingQueue<String> queue, ActionHandler actionHandler) {
+        super(uri);
         this.queue = queue;
         this.actionHandler = actionHandler;
+        this.reconnect = config.isReconnect();
+        this.maxReconnectAttempts = config.getMaxReconnectAttempts();
     }
 
     public Bot createBot(){

@@ -22,11 +22,11 @@ public class ConnectFactory {
      */
     public static ModWebSocketClient createWebsocketClient(BotConfig config, BlockingQueue<String> queue) throws Exception {
         StringBuilder builder = new StringBuilder();
-        if (config.getMiraiHttp()){
+        if (config.isMiraiHttp()){
             builder.append(config.getUrl());
             builder.append("/all");
             builder.append("?verifyKey=");
-            if (config.getIsAccessToken()) {
+            if (config.isAccessToken()) {
                 builder.append(config.getToken());
             }
             builder.append("&qq=");
@@ -34,7 +34,7 @@ public class ConnectFactory {
         }
         else {
             builder.append(config.getUrl());
-            if (config.getIsAccessToken()) {
+            if (config.isAccessToken()) {
                 builder.append("?access_token=");
                 builder.append(config.getToken());
             }
@@ -42,6 +42,6 @@ public class ConnectFactory {
         String url = builder.toString();
         URI uri = new URI(url);
         ActionHandler actionHandler = new ActionHandler();
-        return new ModWebSocketClient(uri, queue, actionHandler);
+        return new ModWebSocketClient(config, uri, queue, actionHandler);
     }
 }

@@ -22,15 +22,18 @@ public class BotConfig {
     @Expose
     private long botId = 0;
     @Expose
-    private Boolean isAccessToken = false;//是否开启鉴权
+    private boolean isAccessToken = false;//是否开启鉴权
     @Expose
-    private Boolean miraiHttp = false;//是否开启mirai-http,否则请使用onebot-mirai
-
+    private boolean miraiHttp = false;//是否开启mirai-http,否则请使用onebot-mirai
+    @Expose
+    private boolean reconnect = true;//是否开启重连
+    @Expose
+    private int maxReconnectAttempts = 20;//重连间隔
     public BotConfig(String url){
-        this(url, "", 0, false, false);
+        this(url, "", 0, false, false, true, 20);
     }
 
     public BotConfig(String url, long botId){
-        this(url, "", botId, false, true);
+        this(url, "", botId, false, true, true, 20);
     }
 }
