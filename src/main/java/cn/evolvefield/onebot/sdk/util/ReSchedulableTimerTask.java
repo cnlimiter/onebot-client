@@ -12,7 +12,7 @@ import java.util.TimerTask;
  * Date: 2022/10/2 11:37
  * Version: 1.0
  */
-public abstract class ReschedulableTimerTask extends TimerTask {
+public abstract class ReSchedulableTimerTask extends TimerTask {
 
         public int i = 0;
 
@@ -34,19 +34,16 @@ public abstract class ReschedulableTimerTask extends TimerTask {
 
             long nextExecutionTime = now.getTime() + newCheckInterval;
 
-            setDeclaredField(TimerTask.class, this, "nextExecutionTime", nextExecutionTime);
+            setDeclaredField(this, "nextExecutionTime", nextExecutionTime);
 
-            setDeclaredField(TimerTask.class, this, "period", newCheckInterval);
+            setDeclaredField(this, "period", newCheckInterval);
 
         }
 
-        static boolean setDeclaredField(Class<?> clazz, Object obj,
-
-                String name, Object value) {
+        static boolean setDeclaredField(Object obj, String name, Object value) {
 
             try {
-
-                Field field = clazz.getDeclaredField(name);
+                Field field = TimerTask.class.getDeclaredField(name);
 
                 field.setAccessible(true);
 

@@ -2,9 +2,12 @@ package cn.evolvefield.onebot.sdk.connection;
 
 import cn.evolvefield.onebot.sdk.core.Bot;
 import cn.evolvefield.onebot.sdk.handler.ActionHandler;
-import cn.evolvefield.onebot.sdk.util.ReschedulableTimerTask;
+import cn.evolvefield.onebot.sdk.util.ReSchedulableTimerTask;
 import cn.evolvefield.onebot.sdk.util.json.util.JsonsObject;
 import com.google.gson.JsonObject;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
@@ -21,28 +24,31 @@ import java.util.concurrent.BlockingQueue;
  * Version: 1.0
  */
 public class ModWebSocketClient extends WebSocketClient implements Connection {
-    private boolean debug = true;
+    private final boolean debug = true;
 
-    private Integer reconnectInterval = 1000;
+    private final int reconnectInterval = 1000;
 
-    private Integer maxReconnectInterval = 30000;
 
-    private Double reconnectDecay = 1.5;
+    private final int maxReconnectInterval = 30000;
 
-    private Integer reconnectAttempts = 0;
+    private final double reconnectDecay = 1.5;
 
-    private Integer maxReconnectAttempts = 5000;
+    private int reconnectAttempts = 0;
+    @Getter
+    @Setter
+    public int maxReconnectAttempts = 20;
 
     /*
     断线重连
      */
-    private Boolean reconnect = true;
+    @Setter
+    public boolean reconnect = true;
 
     private Timer reconnectTimer;
 
-    private volatile Boolean isReconnecting = false;
+    private volatile boolean isReconnecting = false;
 
-    private ReschedulableTimerTask reconnectTimerTask;
+    private ReSchedulableTimerTask reconnectTimerTask;
     private final static String API_RESULT_KEY = "echo";
     private static final String FAILED_STATUS = "failed";
     private static final String RESULT_STATUS_KEY = "status";
@@ -160,7 +166,7 @@ public class ModWebSocketClient extends WebSocketClient implements Connection {
     private void restartReconnectionTimer() {
         cancelReconnectionTimer();
         reconnectTimer = new Timer("reconnectTimer");
-        reconnectTimerTask = new ReschedulableTimerTask() {
+        reconnectTimerTask = new ReSchedulableTimerTask() {
             @Override
             public void run() {
                 if (reconnectAttempts >= maxReconnectAttempts) {
@@ -185,12 +191,12 @@ public class ModWebSocketClient extends WebSocketClient implements Connection {
                         }
                         double timeoutd = reconnectInterval * Math.pow(reconnectDecay, reconnectAttempts);
                         int timeout = Integer.parseInt(new java.text.DecimalFormat("0").format(timeoutd));
-                        timeout = timeout > maxReconnectInterval ? maxReconnectInterval : timeout;
+                        timeout = Math.min(timeout, maxReconnectInterval);
                         log.info(timeout + "");
                         reconnectTimerTask.re_schedule2(timeout);
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    log.warn(e.getMessage());
                 }
             }
         };
