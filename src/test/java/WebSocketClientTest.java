@@ -7,6 +7,9 @@ import cn.evolvefield.onebot.sdk.listener.impl.GroupMessageListener;
 import cn.evolvefield.onebot.sdk.model.event.EventDispatchers;
 import cn.evolvefield.onebot.sdk.model.event.message.GroupMessageEvent;
 import cn.evolvefield.onebot.sdk.model.event.message.PrivateMessageEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -17,6 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class WebSocketClientTest {
 
+    public static Logger logger = LoggerFactory.getLogger("test");
 
 
     public static void main(String[] args) throws Exception {
@@ -25,10 +29,10 @@ public class WebSocketClientTest {
         service.create();//创建websocket客户端
         EventDispatchers dispatchers = new EventDispatchers(blockingQueue);//创建事件分发器
         GroupMessageListener groupMessageListener = new GroupMessageListener();//自定义监听规则
-        groupMessageListener.addHandler("天气", new Handler<GroupMessageEvent>() {
+        groupMessageListener.addHandler("test", new Handler<GroupMessageEvent>() {
             @Override
             public void handle(GroupMessageEvent groupMessage) {
-                System.out.println(groupMessage);
+                logger.info(groupMessage.toString());
 
             }
         });//匹配关键字监听
@@ -36,7 +40,7 @@ public class WebSocketClientTest {
         dispatchers.addListener(new SimpleListener<PrivateMessageEvent>() {//私聊监听
             @Override
             public void onMessage(PrivateMessageEvent privateMessage) {
-                System.out.println(privateMessage);
+                logger.info(privateMessage.toString());
             }
         });//快速监听
 

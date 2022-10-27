@@ -9,6 +9,7 @@ _✨ 基于java开发的 [OneBot](https://github.com/howmanybots/onebot/blob/mas
 <hr>
 <p align="center">
     <a href="https://github.com/cnlimiter/onebot-sdk/issues"><img src="https://img.shields.io/github/issues/cnlimiter/onebot-sdk?style=flat" alt="issues" /></a>
+    <a href="https://jitci.com/gh/cnlimiter/onebot-sdk"><img src="https://jitci.com/gh/cnlimiter/onebot-sdk/svg"></a>
     <a href="https://github.com/cnlimiter/onebot-sdk/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPLV3-green" alt="License"></a>
     <a href="https://github.com/howmanybots/onebot"><img src="https://img.shields.io/badge/OneBot-v11-blue?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAIVBMVEUAAAAAAAADAwMHBwceHh4UFBQNDQ0ZGRkoKCgvLy8iIiLWSdWYAAAAAXRSTlMAQObYZgAAAQVJREFUSMftlM0RgjAQhV+0ATYK6i1Xb+iMd0qgBEqgBEuwBOxU2QDKsjvojQPvkJ/ZL5sXkgWrFirK4MibYUdE3OR2nEpuKz1/q8CdNxNQgthZCXYVLjyoDQftaKuniHHWRnPh2GCUetR2/9HsMAXyUT4/3UHwtQT2AggSCGKeSAsFnxBIOuAggdh3AKTL7pDuCyABcMb0aQP7aM4AnAbc/wHwA5D2wDHTTe56gIIOUA/4YYV2e1sg713PXdZJAuncdZMAGkAukU9OAn40O849+0ornPwT93rphWF0mgAbauUrEOthlX8Zu7P5A6kZyKCJy75hhw1Mgr9RAUvX7A3csGqZegEdniCx30c3agAAAABJRU5ErkJggg=="></a>
 </p>
@@ -69,15 +70,15 @@ public class WebSocketClientTest {
 
 OneBot-SDK 以 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/specs) 标准协议进行开发，兼容所有支持正向WebSocket的OneBot协议客户端
 
-| 项目地址 | 平台                                            | 核心作者 | 备注 |
-| --- |-----------------------------------------------| --- | --- |
-| [koishijs/koishi](https://github.com/koishijs/koishi) | [koishi](https://koishi.js.org/)              | shigma |  |
-| [onebot-walle/walle-q](https://github.com/onebot-walle/walle-q) |                                               | abrahum |  |
-| [Yiwen-Chan/OneBot-YaYa](https://github.com/Yiwen-Chan/OneBot-YaYa) | [先驱](https://www.xianqubot.com/)              | kanri |  |
-| [richardchien/coolq-http-api](https://github.com/richardchien/coolq-http-api) | CKYU                                          | richardchien | 可在 Mirai 平台使用 [mirai-native](https://github.com/iTXTech/mirai-native) 加载 |
-| [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp) | [MiraiGo](https://github.com/Mrs4s/MiraiGo)   | Mrs4s |  |
-| [yyuueexxiinngg/OneBot-Mirai](https://github.com/yyuueexxiinngg/onebot-kotlin) | [Mirai](https://github.com/mamoe/mirai)       | yyuueexxiinngg |  |
-| [takayama-lily/onebot](https://github.com/takayama-lily/onebot) | [OICQ](https://github.com/takayama-lily/oicq) | takayama |  |
+| 项目地址                                                                           | 平台                                            | 核心作者           | 备注                                                                       |
+|--------------------------------------------------------------------------------|-----------------------------------------------|----------------|--------------------------------------------------------------------------|
+| [koishijs/koishi](https://github.com/koishijs/koishi)                          | [koishi](https://koishi.js.org/)              | shigma         |                                                                          |
+| [onebot-walle/walle-q](https://github.com/onebot-walle/walle-q)                |                                               | abrahum        |                                                                          |
+| [Yiwen-Chan/OneBot-YaYa](https://github.com/Yiwen-Chan/OneBot-YaYa)            | [先驱](https://www.xianqubot.com/)              | kanri          |                                                                          |
+| [richardchien/coolq-http-api](https://github.com/richardchien/coolq-http-api)  | CKYU                                          | richardchien   | 可在 Mirai 平台使用 [mirai-native](https://github.com/iTXTech/mirai-native) 加载 |
+| [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp)                          | [MiraiGo](https://github.com/Mrs4s/MiraiGo)   | Mrs4s          |                                                                          |
+| [yyuueexxiinngg/OneBot-Mirai](https://github.com/yyuueexxiinngg/onebot-kotlin) | [Mirai](https://github.com/mamoe/mirai)       | yyuueexxiinngg |                                                                          |
+| [takayama-lily/onebot](https://github.com/takayama-lily/onebot)                | [OICQ](https://github.com/takayama-lily/oicq) | takayama       |                                                                          |
 
 
 # Credits
