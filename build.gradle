@@ -33,7 +33,7 @@ repositories {
 
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.24'
+    shadow 'org.projectlombok:lombok:1.18.24'
     compileOnly 'com.google.code.gson:gson:2.8.9'
     compileOnly 'org.jetbrains:annotations:20.1.0'
     compileOnly 'org.slf4j:slf4j-api:1.7.30'
