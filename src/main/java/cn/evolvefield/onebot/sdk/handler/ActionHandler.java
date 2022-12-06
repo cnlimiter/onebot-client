@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Description:
@@ -16,8 +18,9 @@ import java.util.Map;
  * Date: 2022/9/14 15:05
  * Version: 1.0
  */
-@Slf4j
+
 public class ActionHandler {
+    private static final Logger log = Logger.getLogger("Action");
     /**
      * 请求回调数据
      */
@@ -59,7 +62,7 @@ public class ActionHandler {
         try {
             result = actionSendUtils.send(reqJson);
         } catch (Exception e) {
-            log.error("Request failed: {}", e.getMessage());
+            log.log(Level.WARNING,"Request failed: {}", e.getMessage());
             result = new JsonObject();
             result.addProperty("status", "failed");
             result.addProperty("retcode", -1);

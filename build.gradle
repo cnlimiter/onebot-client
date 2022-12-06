@@ -31,39 +31,62 @@ repositories {
     mavenCentral()
 }
 
+
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.24'
-    implementation 'com.google.code.gson:gson:2.8.8'
-    implementation 'org.jetbrains:annotations:20.1.0'
-    implementation 'org.slf4j:slf4j-simple:1.7.30'
-    implementation 'org.java-websocket:Java-WebSocket:1.5.1'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'com.google.code.gson:gson:2.8.9'
+    compileOnly 'org.jetbrains:annotations:20.1.0'
+    compileOnly 'org.slf4j:slf4j-api:1.7.30'
+    //implementation 'org.java-websocket:Java-WebSocket:1.5.1'
+    shadow 'org.java-websocket:Java-WebSocket:1.5.1'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'com.google.code.gson:gson:2.8.8'
+    annotationProcessor 'com.google.code.gson:gson:2.8.9'
     annotationProcessor 'org.jetbrains:annotations:20.1.0'
-    annotationProcessor 'org.slf4j:slf4j-simple:1.7.30'
+    annotationProcessor 'org.slf4j:slf4j-api:1.7.30'
     annotationProcessor 'org.java-websocket:Java-WebSocket:1.5.1'
 
 }
+artifacts {
+    archives jar
+    archives shadowJar
+}
+
+
 shadowJar {
-    archiveBaseName.set(project.archives_base_name)
-    archiveClassifier.set('')
-    archiveVersion.set(project.sdk_version)
+    project.configurations.shadow.setTransitive(true);
+    configurations = [project.configurations.shadow]
+    relocate 'org.java_websocket', "cn.evolvefield.onebot.sdk.websocket"
     dependencies {
-        exclude(dependency('com.google.code.gson:gson:2.8.8'))
-        exclude(dependency('org.jetbrains:annotations:20.1.0'))
-        exclude(dependency('org.slf4j:slf4j-simple:1.7.30'))
+        exclude(dependency('org.slf4j:slf4j-api:.*'))
     }
+    classifier = ""
+    archiveBaseName.set(project.archives_base_name)
+    archiveVersion.set(project.sdk_version)
+
 }
 
 publishing {
     publications {
         shadow(MavenPublication) { publication ->
             project.shadow.component(publication)
+            version = "${project.sdk_version}"
+            artifactId = "${project.archives_base_name}"
+            groupId = "${project.maven_group}"
         }
     }
 
     repositories {
+        if (System.getenv('MAVEN_USERNAME') != null && System.getenv('MAVEN_PASSWORD') != null) {
+            maven {
+                name 'release'
+                url = 'https://maven.nova-committee.cn/releases'
 
+                credentials {
+                    username System.getenv('MAVEN_USERNAME')
+                    password System.getenv('MAVEN_PASSWORD')
+                }
+            }
+        }
     }
 }

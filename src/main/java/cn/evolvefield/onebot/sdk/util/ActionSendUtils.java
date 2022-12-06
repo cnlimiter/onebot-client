@@ -2,7 +2,7 @@ package cn.evolvefield.onebot.sdk.util;
 
 import cn.evolvefield.onebot.sdk.connection.ModWebSocketClient;
 import com.google.gson.JsonObject;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -12,8 +12,9 @@ import java.io.IOException;
  * Date: 2022/9/14 15:06
  * Version: 1.0
  */
-@Slf4j
 public class ActionSendUtils extends Thread {
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(ActionSendUtils.class);
+
     private final ModWebSocketClient channel;
 
     private final long requestTimeout;
@@ -37,7 +38,7 @@ public class ActionSendUtils extends Thread {
      */
     public JsonObject send(JsonObject req) throws IOException, InterruptedException {
         synchronized (channel) {
-            log.debug("[Action] {}", req.toString());
+            log.debug(String.format("[Action] %s", req.toString()));
             channel.send(req.toString());
         }
         synchronized (this) {

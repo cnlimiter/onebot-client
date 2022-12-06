@@ -4,7 +4,8 @@ import cn.evolvefield.onebot.sdk.listener.EnableListener;
 import cn.evolvefield.onebot.sdk.listener.Listener;
 import cn.evolvefield.onebot.sdk.util.ListenerUtils;
 import cn.evolvefield.onebot.sdk.util.json.util.GsonUtil;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,8 @@ import java.util.concurrent.Executors;
  * Version: 1.0
  */
 @SuppressWarnings("unused")
-@Slf4j
 public class EventDispatchers implements Runnable{
+    private static final Logger log = LoggerFactory.getLogger(EventDispatchers.class);
 
     //存储监听器对象
     protected List<Listener> listenerList = new ArrayList<>();
@@ -69,7 +70,7 @@ public class EventDispatchers implements Runnable{
             try {
                 this.runTask();
             } catch (Exception e) {
-                log.warn(e.getMessage());
+                log.error(e.getMessage());
             }
         }
     }
@@ -89,7 +90,7 @@ public class EventDispatchers implements Runnable{
         if (this.messageListener != null){
             this.messageListener.onMessage(message);
         }
-        log.debug("接收到上报消息内容：{} \n {}", messageType, messageType);
+        log.debug(String.format("接收到上报消息内容：%s \n %s", messageType, messageType));
         Event bean = GsonUtil.strToJavaBean(message, messageType);//将消息反序列化为对象
         List<Listener> executeListener = (executeListener = cache.get(messageType)) == null ?
                 getMethod(messageType) : executeListener;//检查缓存
