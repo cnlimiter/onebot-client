@@ -35,7 +35,6 @@ public class GroupAdminNoticeEvent extends NoticeEvent {
     /**
      * 管理员 QQ 号
      */
-    @SerializedName( "user_id")
-    private long userId;
+
 
 }

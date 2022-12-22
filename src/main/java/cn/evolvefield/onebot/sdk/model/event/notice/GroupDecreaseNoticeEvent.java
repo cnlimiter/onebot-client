@@ -28,7 +28,4 @@ public class GroupDecreaseNoticeEvent extends NoticeEvent {
     @SerializedName( "operator_id")
     private long operatorId;
 
-    @SerializedName( "user_id")
-    private long userId;
-
 }
