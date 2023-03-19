@@ -2,8 +2,9 @@ import cn.evolvefield.onebot.client.config.BotConfig;
 import cn.evolvefield.onebot.client.connection.ConnectFactory;
 import cn.evolvefield.onebot.client.connection.ModWebSocketClient;
 import cn.evolvefield.onebot.client.core.Bot;
-import cn.evolvefield.onebot.client.model.action.response.GroupMemberInfoResp;
-import cn.evolvefield.onebot.client.util.MsgUtils;
+import cn.evolvefield.onebot.sdk.response.group.GroupMemberInfoResp;
+import cn.evolvefield.onebot.sdk.util.MsgUtils;
+
 
 import java.util.concurrent.LinkedBlockingQueue;
 

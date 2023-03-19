@@ -3,7 +3,7 @@
 
 # OneBot Client
 
-_✨ 基于java开发的 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md) 协议客户端sdk✨_
+_✨ 基于java开发的 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md) 协议客户端✨_
 
 </div>
 <hr>
