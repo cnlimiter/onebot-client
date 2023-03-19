@@ -104,5 +104,5 @@ Thanks [JetBrains](https://www.jetbrains.com/?from=Shiro) Provide Free License S
 
 ## Stargazers over time
 
-[![Stargazers over time](https://starchart.cc/cnlimiter/onebot-sdk.svg)](https://starchart.cc/cnlimiter/onebot-sdk)
+[![Stargazers over time](https://starchart.cc/cnlimiter/onebot-client.svg)](https://starchart.cc/cnlimiter/onebot-client)
 
