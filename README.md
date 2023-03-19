@@ -3,14 +3,14 @@
 
 # OneBot Client
 
-_✨ 基于java开发的 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md)协议客户端sdk✨_
+_✨ 基于java开发的 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md) 协议客户端sdk✨_
 
 </div>
 <hr>
 <p align="center">
-    <a href="https://github.com/cnlimiter/onebot-sdk/issues"><img src="https://img.shields.io/github/issues/cnlimiter/onebot-sdk?style=flat" alt="issues" /></a>
-    <a href="https://jitci.com/gh/cnlimiter/onebot-sdk"><img src="https://jitci.com/gh/cnlimiter/onebot-sdk/svg"></a>
-    <a href="https://github.com/cnlimiter/onebot-sdk/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPLV3-green" alt="License"></a>
+    <a href="https://github.com/cnlimiter/onebot-client/issues"><img src="https://img.shields.io/github/issues/cnlimiter/onebot-sdk?style=flat" alt="issues" /></a>
+    <a href="https://maven.nova-committee.cn/#/releases/cn/evolvefield/bot/OneBot-Client"><img src="https://jitci.com/gh/cnlimiter/onebot-sdk/svg"></a>
+    <a href="https://github.com/cnlimiter/onebot-client/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPLV3-green" alt="License"></a>
     <a href="https://github.com/howmanybots/onebot"><img src="https://img.shields.io/badge/OneBot-v11-blue?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAIVBMVEUAAAAAAAADAwMHBwceHh4UFBQNDQ0ZGRkoKCgvLy8iIiLWSdWYAAAAAXRSTlMAQObYZgAAAQVJREFUSMftlM0RgjAQhV+0ATYK6i1Xb+iMd0qgBEqgBEuwBOxU2QDKsjvojQPvkJ/ZL5sXkgWrFirK4MibYUdE3OR2nEpuKz1/q8CdNxNQgthZCXYVLjyoDQftaKuniHHWRnPh2GCUetR2/9HsMAXyUT4/3UHwtQT2AggSCGKeSAsFnxBIOuAggdh3AKTL7pDuCyABcMb0aQP7aM4AnAbc/wHwA5D2wDHTTe56gIIOUA/4YYV2e1sg713PXdZJAuncdZMAGkAukU9OAn40O849+0ornPwT93rphWF0mgAbauUrEOthlX8Zu7P5A6kZyKCJy75hhw1Mgr9RAUvX7A3csGqZegEdniCx30c3agAAAABJRU5ErkJggg=="></a>
 </p>
 <p align="center">
@@ -68,7 +68,7 @@ public class WebSocketClientTest {
 
 # Client
 
-OneBot-SDK 以 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/specs) 标准协议进行开发，兼容所有支持正向WebSocket的OneBot协议客户端
+OneBot-Client 以 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/specs) 标准协议进行开发，兼容所有支持正向WebSocket的OneBot协议客户端
 
 | 项目地址                                                                           | 平台                                            | 核心作者           | 备注                                                                       |
 |--------------------------------------------------------------------------------|-----------------------------------------------|----------------|--------------------------------------------------------------------------|

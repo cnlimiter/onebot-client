@@ -2,7 +2,7 @@ package cn.evolvefield.onebot.client.listener.impl;
 
 import cn.evolvefield.onebot.client.handler.Handler;
 import cn.evolvefield.onebot.client.listener.DefaultHandlerListener;
-import cn.evolvefield.onebot.client.model.event.message.GroupMessageEvent;
+import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
 
 /**
  * Description:

@@ -1,8 +1,8 @@
 package cn.evolvefield.onebot.client.util;
 
-import cn.evolvefield.onebot.client.model.event.Event;
-import cn.evolvefield.onebot.client.model.event.MessageMap;
-import cn.evolvefield.onebot.client.util.json.util.JsonsObject;
+import cn.evolvefield.onebot.sdk.event.Event;
+import cn.evolvefield.onebot.sdk.map.MessageMap;
+import cn.evolvefield.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.JsonObject;
 
 

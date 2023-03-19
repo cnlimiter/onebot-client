@@ -1,8 +1,8 @@
 package cn.evolvefield.onebot.client.handler;
 
 import cn.evolvefield.onebot.client.connection.ModWebSocketClient;
-import cn.evolvefield.onebot.client.model.action.common.ActionPath;
 import cn.evolvefield.onebot.client.util.ActionSendUtils;
+import cn.evolvefield.onebot.sdk.action.ActionPath;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;

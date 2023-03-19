@@ -4,7 +4,7 @@ import cn.evolvefield.onebot.client.config.BotConfig;
 import cn.evolvefield.onebot.client.core.Bot;
 import cn.evolvefield.onebot.client.handler.ActionHandler;
 import cn.evolvefield.onebot.client.util.ReSchedulableTimerTask;
-import cn.evolvefield.onebot.client.util.json.util.JsonsObject;
+import cn.evolvefield.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.JsonObject;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
