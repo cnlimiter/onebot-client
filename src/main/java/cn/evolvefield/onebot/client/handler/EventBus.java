@@ -8,7 +8,6 @@ import cn.evolvefield.onebot.sdk.util.json.GsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,23 +23,19 @@ import java.util.concurrent.Executors;
  * Description:
  */
 @SuppressWarnings("unused")
-public class EventHandler implements Runnable{
-    private static final Logger log = LoggerFactory.getLogger(EventHandler.class);
-
+public class EventBus implements Runnable {
+    private static final Logger log = LoggerFactory.getLogger(EventBus.class);
     //存储监听器对象
     protected List<Listener> listenerList = new ArrayList<>();
-
     //缓存类型与监听器的关系
     protected Map<Class<? extends Event>, List<Listener>> cache = new ConcurrentHashMap<>();
-
     //线程池 用于并发执行队列中的任务
     protected ExecutorService service;
-
     protected BlockingQueue<String> queue;
-
+    private boolean close = false;
     private Listener<String> messageListener;
 
-    public EventHandler(BlockingQueue<String> queue) {
+    public EventBus(BlockingQueue<String> queue) {
         this.queue = queue;
     }
 
@@ -58,23 +53,27 @@ public class EventHandler implements Runnable{
         }
         service = Executors.newFixedThreadPool(threadCount);
         for (int i = 0; i < threadCount; i++) {
-            service.submit(this);
+            service.execute(this);
         }
     }
 
-    public void stop(){
-        service.shutdown();
+    public void stop() {
+        this.close = true;
+        service.shutdownNow();
     }
 
     @Override
     public void run() {
-        while (true) {
-            try {
+
+        try {
+            while (!close) {
                 this.runTask();
-            } catch (Exception e) {
-                log.error(e.getMessage());
             }
+        } catch (Exception e) {
+                log.error(e.getMessage());
         }
+
+
     }
 
     /**
@@ -89,7 +88,7 @@ public class EventHandler implements Runnable{
         if (messageType == null) {
             return;
         }
-        if (this.messageListener != null){
+        if (this.messageListener != null) {
             this.messageListener.onMessage(message);
         }
         log.debug(String.format("接收到上报消息内容：%s \n %s", messageType, messageType));
@@ -114,8 +113,9 @@ public class EventHandler implements Runnable{
      */
     protected String getTask() {
         try {
-            return this.queue.take();
+            return this.queue.poll();
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(e.getMessage());
         }
         return null;
@@ -136,8 +136,8 @@ public class EventHandler implements Runnable{
                 } catch (NoSuchMethodException e) {
                     continue;//不支持则跳过
                 }
-                if(listener instanceof EnableListener){
-                    EnableListener enableListener = (EnableListener)listener;
+                if (listener instanceof EnableListener) {
+                    EnableListener enableListener = (EnableListener) listener;
                     if (!enableListener.enable()) {//检测是否开启该插件
                         continue;
                     }
@@ -161,11 +161,11 @@ public class EventHandler implements Runnable{
         cache.clear();
     }
 
-    public void setMessageListener(Listener<String> messageListener) {
-        this.messageListener = messageListener;
-    }
-
     public Listener<String> getMessageListener() {
         return messageListener;
+    }
+
+    public void setMessageListener(Listener<String> messageListener) {
+        this.messageListener = messageListener;
     }
 }

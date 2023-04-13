@@ -1,14 +1,15 @@
 package cn.evolvefield.onebot.client.handler;
 
-import cn.evolvefield.onebot.client.connection.ModWebSocketClient;
 import cn.evolvefield.onebot.client.util.ActionSendUtils;
 import cn.evolvefield.onebot.sdk.action.ActionPath;
+import cn.evolvefield.sdk.fastws.client.WebSocketClient;
 import com.google.gson.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Description:
@@ -18,7 +19,7 @@ import java.util.logging.Logger;
  */
 
 public class ActionHandler {
-    private static final Logger log = Logger.getLogger("Action");
+    private static final Logger log = LoggerFactory.getLogger("Action");
     /**
      * 请求回调数据
      */
@@ -49,7 +50,7 @@ public class ActionHandler {
      * @param params  请求参数
      * @return 请求结果
      */
-    public JsonObject action(ModWebSocketClient channel, ActionPath action, JsonObject params) {
+    public JsonObject action(WebSocketClient channel, ActionPath action, JsonObject params) {
         if (!channel.isOpen()) {
             return null;
         }
@@ -60,7 +61,7 @@ public class ActionHandler {
         try {
             result = actionSendUtils.send(reqJson);
         } catch (Exception e) {
-            log.log(Level.WARNING,"Request failed: {}", e.getMessage());
+            log.warn("Request failed: {}", e.getMessage());
             result = new JsonObject();
             result.addProperty("status", "failed");
             result.addProperty("retcode", -1);

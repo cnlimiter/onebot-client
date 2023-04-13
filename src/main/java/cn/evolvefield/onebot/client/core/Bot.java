@@ -1,28 +1,31 @@
 package cn.evolvefield.onebot.client.core;
 
 
-import cn.evolvefield.onebot.client.connection.ModWebSocketClient;
 import cn.evolvefield.onebot.client.handler.ActionHandler;
-import cn.evolvefield.onebot.sdk.action.*;
-import cn.evolvefield.onebot.sdk.entity.*;
-import cn.evolvefield.onebot.sdk.response.guild.*;
-import cn.evolvefield.onebot.sdk.response.group.*;
-import cn.evolvefield.onebot.sdk.response.misc.*;
-import cn.evolvefield.onebot.sdk.response.common.*;
-import cn.evolvefield.onebot.sdk.response.contact.*;
+import cn.evolvefield.onebot.sdk.action.ActionData;
+import cn.evolvefield.onebot.sdk.action.ActionList;
+import cn.evolvefield.onebot.sdk.action.ActionPath;
+import cn.evolvefield.onebot.sdk.action.ActionRaw;
+import cn.evolvefield.onebot.sdk.entity.Anonymous;
+import cn.evolvefield.onebot.sdk.entity.GuildMsgId;
+import cn.evolvefield.onebot.sdk.entity.MsgId;
 import cn.evolvefield.onebot.sdk.enums.ActionPathEnum;
 import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
+import cn.evolvefield.onebot.sdk.response.contact.FriendInfoResp;
+import cn.evolvefield.onebot.sdk.response.contact.LoginInfoResp;
+import cn.evolvefield.onebot.sdk.response.contact.StrangerInfoResp;
+import cn.evolvefield.onebot.sdk.response.contact.UnidirectionalFriendListResp;
+import cn.evolvefield.onebot.sdk.response.group.*;
+import cn.evolvefield.onebot.sdk.response.guild.*;
+import cn.evolvefield.onebot.sdk.response.misc.*;
 import cn.evolvefield.onebot.sdk.util.json.GsonUtil;
 import cn.evolvefield.onebot.sdk.util.json.JsonsObject;
-import cn.evolvefield.onebot.sdk.entity.MsgId;
-import cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent;
+import cn.evolvefield.sdk.fastws.client.WebSocketClient;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Description:
@@ -37,17 +40,15 @@ public class Bot {
 
     @Getter
     @Setter
-    private ModWebSocketClient channel;
+    private WebSocketClient channel;
 
     /**
-//     * @param channel                    {@link ModWebSocketClient}
-//     * @param actionHandler              {@link ActionHandler}
+     * @param channel                    {@link WebSocketClient}
+     * @param actionHandler              {@link ActionHandler}
      */
-    public Bot(ModWebSocketClient channel, ActionHandler actionHandler) {
-        LinkedBlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
+    public Bot(WebSocketClient channel, ActionHandler actionHandler) {
         this.channel = channel;
         this.actionHandler = actionHandler;
-
     }
 
     /**
@@ -60,13 +61,14 @@ public class Bot {
      */
     public ActionData<MsgId> sendMsg(GroupMessageEvent event, String msg, boolean autoEscape) {
         switch (event.getMessageType()) {
-            case "private": {
+            case "private" -> {
                 return sendPrivateMsg(event.getUserId(), msg, autoEscape);
             }
-            case "group": {
+            case "group" -> {
                 return sendGroupMsg(event.getGroupId(), msg, autoEscape);
             }
-            default:
+            default -> {
+            }
         }
         return null;
     }

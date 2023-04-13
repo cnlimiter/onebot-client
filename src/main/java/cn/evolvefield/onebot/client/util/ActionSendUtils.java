@@ -1,6 +1,6 @@
 package cn.evolvefield.onebot.client.util;
 
-import cn.evolvefield.onebot.client.connection.ModWebSocketClient;
+import cn.evolvefield.sdk.fastws.client.WebSocketClient;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,17 +16,17 @@ import java.io.IOException;
 public class ActionSendUtils extends Thread {
     private static final Logger log = LoggerFactory.getLogger(ActionSendUtils.class);
 
-    private final ModWebSocketClient channel;
+    private final WebSocketClient channel;
 
     private final long requestTimeout;
 
     private JsonObject resp;
 
     /**
-     * @param channel        {@link ModWebSocketClient}
+     * @param channel        {@link WebSocketClient}
      * @param requestTimeout Request Timeout
      */
-    public ActionSendUtils(ModWebSocketClient channel, Long requestTimeout) {
+    public ActionSendUtils(WebSocketClient channel, Long requestTimeout) {
         this.channel = channel;
         this.requestTimeout = requestTimeout;
     }
@@ -40,7 +40,7 @@ public class ActionSendUtils extends Thread {
     public JsonObject send(JsonObject req) throws IOException, InterruptedException {
         synchronized (channel) {
             log.debug(String.format("[Action] %s", req.toString()));
-            channel.send(req.toString());
+            channel.sendTextMessage(req.toString());
         }
         synchronized (this) {
             this.wait(requestTimeout);
