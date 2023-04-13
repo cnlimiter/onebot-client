@@ -3,14 +3,15 @@ package cn.evolvefield.onebot.client.connection;
 import cn.evolvefield.onebot.client.config.BotConfig;
 import cn.evolvefield.onebot.client.core.Bot;
 import cn.evolvefield.onebot.client.handler.ActionHandler;
-import cn.evolvefield.sdk.fastws.client.FastWSClient;
-import cn.evolvefield.sdk.fastws.client.config.WSConfig;
-import cn.evolvefield.sdk.fastws.client.core.model.NioModel;
+import org.java_websocket.WebSocket;
 
+import java.net.URI;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static cn.evolvefield.onebot.client.connection.WSClient.log;
 
 /**
  * Description:
@@ -19,15 +20,9 @@ import java.util.concurrent.TimeUnit;
  * Version: 1.0
  */
 public class ConnectFactory {
-    ThreadPoolExecutor threadPool = new ThreadPoolExecutor(0, 30,
-            60L, TimeUnit.SECONDS, new SynchronousQueue<>());
     private final BotConfig config;
     private final BlockingQueue<String> queue;
     private final ActionHandler actionHandler;
-
-    public FastWSClient app;
-    public Bot bot;
-
     public WSClient ws;
     /**
      *
@@ -38,9 +33,11 @@ public class ConnectFactory {
         this.config = config;
         this.queue = queue;
         this.actionHandler = new ActionHandler();
-        this.app = createWebsocketClient();
-        this.bot = new Bot(app.getModelCache().get(ws.id), actionHandler);
-
+        try {
+            this.ws = createWebsocketClient();
+        }catch (NullPointerException e){
+            log.error("▌ §c连接错误，请检查服务端是否开启 §a┈━═☆");
+        }
     }
 
 
@@ -49,9 +46,9 @@ public class ConnectFactory {
      * 创建websocket客户端(支持cqhttp和mirai类型)
      * @return 连接示例
      */
-    public FastWSClient createWebsocketClient(){
-        FastWSClient application = FastWSClient.run(NioModel.class, threadPool);
+    public WSClient createWebsocketClient(){
         StringBuilder builder = new StringBuilder();
+        WSClient ws = null;
         if (config.isMiraiHttp()){
             builder.append(config.getUrl());
             builder.append("/all");
@@ -70,17 +67,17 @@ public class ConnectFactory {
             }
         }
         String url = builder.toString();
-        this.ws = new WSClient(queue, actionHandler);
-        application.connect(new WSConfig(url, ws));
-        return application;
+        try {
+            ws = new WSClient(URI.create(url), queue, actionHandler);
+            ws.connect();
+        }catch (Exception e){
+            log.error("▌ §c{}连接错误，请检查服务端是否开启 §a┈━═☆", url);
+        }
+        return ws;
     }
 
     public void stop(){
-        if (app != null){
-            app.close();
-            app.destroy();
-        }
-        this.threadPool.shutdownNow();
+        ws.close();
     }
 
 

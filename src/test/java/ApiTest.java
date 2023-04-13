@@ -17,7 +17,7 @@ public class ApiTest {
         ConnectFactory service = new ConnectFactory(
                 new BotConfig("ws://127.0.0.1:8080"),blockingQueue)
                 ;//创建websocket客户端
-        Bot bot = service.bot;
+        Bot bot = service.ws.createBot();
         var test =  bot.sendGroupMsg(337631140, MsgUtils.builder().text("123").build(), true);//发送群消息
         //GroupMemberInfoResp sender = bot.getGroupMemberInfo(720975019, 1812165465, false).getData();//获取响应的群成员信息
         System.out.println(test.getData().toString());//打印

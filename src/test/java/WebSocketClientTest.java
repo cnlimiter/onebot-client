@@ -27,7 +27,7 @@ public class WebSocketClientTest {
         ConnectFactory service = new ConnectFactory(
                 new BotConfig("ws://127.0.0.1:8080"),blockingQueue)
                 ;//创建websocket客户端
-        Bot bot = service.bot;
+        Bot bot = service.ws.createBot();
         EventBus dispatchers = new EventBus(blockingQueue);//创建事件分发器
         GroupMessageListener groupMessageListener = new GroupMessageListener();//自定义监听规则
         groupMessageListener.addHandler("test", new Handler<GroupMessageEvent>() {

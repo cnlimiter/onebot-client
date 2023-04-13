@@ -20,12 +20,12 @@ import cn.evolvefield.onebot.sdk.response.guild.*;
 import cn.evolvefield.onebot.sdk.response.misc.*;
 import cn.evolvefield.onebot.sdk.util.json.GsonUtil;
 import cn.evolvefield.onebot.sdk.util.json.JsonsObject;
-import cn.evolvefield.sdk.fastws.client.WebSocketClient;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
+import org.java_websocket.WebSocket;
 
 /**
  * Description:
@@ -40,13 +40,13 @@ public class Bot {
 
     @Getter
     @Setter
-    private WebSocketClient channel;
+    private WebSocket channel;
 
     /**
-     * @param channel                    {@link WebSocketClient}
+     * @param channel                    {@link WebSocket}
      * @param actionHandler              {@link ActionHandler}
      */
-    public Bot(WebSocketClient channel, ActionHandler actionHandler) {
+    public Bot(WebSocket channel, ActionHandler actionHandler) {
         this.channel = channel;
         this.actionHandler = actionHandler;
     }

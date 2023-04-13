@@ -2,8 +2,8 @@ package cn.evolvefield.onebot.client.handler;
 
 import cn.evolvefield.onebot.client.util.ActionSendUtils;
 import cn.evolvefield.onebot.sdk.action.ActionPath;
-import cn.evolvefield.sdk.fastws.client.WebSocketClient;
 import com.google.gson.JsonObject;
+import org.java_websocket.WebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ public class ActionHandler {
      * @param params  请求参数
      * @return 请求结果
      */
-    public JsonObject action(WebSocketClient channel, ActionPath action, JsonObject params) {
+    public JsonObject action(WebSocket channel, ActionPath action, JsonObject params) {
         if (!channel.isOpen()) {
             return null;
         }

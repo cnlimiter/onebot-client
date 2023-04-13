@@ -1,14 +1,17 @@
 package cn.evolvefield.onebot.client.connection;
 
+import cn.evolvefield.onebot.client.core.Bot;
 import cn.evolvefield.onebot.client.handler.ActionHandler;
 import cn.evolvefield.onebot.sdk.util.json.JsonsObject;
-import cn.evolvefield.sdk.fastws.client.WebSocketClient;
-import cn.evolvefield.sdk.fastws.client.core.process.ActuatorAbstractAsync;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import org.java_websocket.WebSocket;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -17,8 +20,8 @@ import java.util.concurrent.BlockingQueue;
  * Date: 2023/4/4 2:20
  * Description:
  */
-public class WSClient extends ActuatorAbstractAsync {
-    private static final Logger log = LoggerFactory.getLogger(WSClient.class);
+public class WSClient extends WebSocketClient {
+    public static final Logger log = LoggerFactory.getLogger("WSClient");
     private final static String API_RESULT_KEY = "echo";
     private static final String FAILED_STATUS = "failed";
     private static final String RESULT_STATUS_KEY = "status";
@@ -27,33 +30,24 @@ public class WSClient extends ActuatorAbstractAsync {
     private final BlockingQueue<String> queue;
     private final ActionHandler actionHandler;
 
-    public String id;
-
-    public WSClient(BlockingQueue<String> queue, ActionHandler actionHandler) {
+    public WSClient(URI uri, BlockingQueue<String> queue, ActionHandler actionHandler) {
+        super(uri);
         this.queue = queue;
         this.actionHandler = actionHandler;
     }
 
+    public Bot createBot(){
+        return new Bot(this, actionHandler);
+    }
+
 
     @Override
-    public void onOpen(WebSocketClient webSocketClient) {
-        log.error("▌ §c客户端:{} 已连接到服务器 §a┈━═☆", webSocketClient.getId());
-        this.id = webSocketClient.getId();
+    public void onOpen(ServerHandshake handshakedata) {
+        log.info("▌ §c已连接到服务器 §a┈━═☆");
     }
 
     @Override
-    public void onClose(WebSocketClient webSocketClient) {
-
-    }
-
-    @Override
-    public void onError(WebSocketClient webSocketClient, Throwable throwable) {
-        log.error("▌ §c客户端:{} 出现错误 {} §a┈━═☆", webSocketClient.getId(), throwable.getLocalizedMessage());
-
-    }
-
-    @Override
-    public void onMessageText(WebSocketClient webSocketClient, String message) {
+    public void onMessage(String message) {
         try {
             JsonObject jsonObject = new JsonsObject(message).get();
 
@@ -76,22 +70,12 @@ public class WSClient extends ActuatorAbstractAsync {
     }
 
     @Override
-    public void onMessageBinary(WebSocketClient webSocketClient, byte[] bytes) {
-
+    public void onClose(int code, String reason, boolean remote) {
+        log.info("▌ §c服务器因{}已关闭",  reason);
     }
 
     @Override
-    public void onMessagePong(WebSocketClient webSocketClient, byte[] bytes) {
-
-    }
-
-    @Override
-    public void onMessagePing(WebSocketClient webSocketClient, byte[] bytes) {
-
-    }
-
-    @Override
-    public void onMessageContinuation(WebSocketClient webSocketClient, byte[] bytes) {
-
+    public void onError(Exception ex) {
+        log.error("▌ §c出现错误{}或未连接§a┈━═☆",  ex.getLocalizedMessage());
     }
 }
