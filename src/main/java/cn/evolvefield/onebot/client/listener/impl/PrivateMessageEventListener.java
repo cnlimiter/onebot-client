@@ -1,8 +1,8 @@
 package cn.evolvefield.onebot.client.listener.impl;
 
 
+import cn.evolvefield.onebot.client.handler.DefaultEventHandler;
 import cn.evolvefield.onebot.client.handler.Handler;
-import cn.evolvefield.onebot.client.listener.DefaultHandlerListener;
 import cn.evolvefield.onebot.sdk.event.message.PrivateMessageEvent;
 
 /**
@@ -11,7 +11,7 @@ import cn.evolvefield.onebot.sdk.event.message.PrivateMessageEvent;
  * Date: 2022/9/14 16:29
  * Version: 1.0
  */
-public class PrivateMessageListener  extends DefaultHandlerListener<PrivateMessageEvent> {
+public class PrivateMessageEventListener extends DefaultEventHandler<PrivateMessageEvent> {
     @Override
     public void onMessage(PrivateMessageEvent privateMessage) {
         //处理逻辑

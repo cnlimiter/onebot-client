@@ -1,5 +1,6 @@
 package cn.evolvefield.onebot.client.util;
 
+import cn.evolvefield.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.JsonObject;
 import org.java_websocket.WebSocket;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class ActionSendUtils extends Thread {
 
     private final long requestTimeout;
 
-    private JsonObject resp;
+    private JsonsObject resp;
 
     /**
      * @param channel        {@link WebSocket}
@@ -37,7 +38,7 @@ public class ActionSendUtils extends Thread {
      * @throws IOException          exception
      * @throws InterruptedException exception
      */
-    public JsonObject send(JsonObject req) throws IOException, InterruptedException {
+    public JsonsObject send(JsonObject req) throws IOException, InterruptedException {
         synchronized (channel) {
             log.debug(String.format("[Action] %s", req.toString()));
             channel.send(req.toString());
@@ -51,7 +52,7 @@ public class ActionSendUtils extends Thread {
     /**
      * @param resp Response json data
      */
-    public void onCallback(JsonObject resp) {
+    public void onCallback(JsonsObject resp) {
         this.resp = resp;
         synchronized (this) {
             this.notify();

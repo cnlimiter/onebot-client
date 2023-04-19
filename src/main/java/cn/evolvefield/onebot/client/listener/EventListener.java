@@ -6,7 +6,7 @@ package cn.evolvefield.onebot.client.listener;
  * Date: 2022/9/14 16:11
  * Version: 1.0
  */
-public interface Listener<T> extends VailderListener<T> {
+public interface EventListener<T> {
 
         /**
          * 监听到消息

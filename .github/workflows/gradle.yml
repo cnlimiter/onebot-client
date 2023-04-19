@@ -9,9 +9,8 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    tags:
+      - '*'
 
 permissions:
   contents: read
@@ -19,7 +18,7 @@ permissions:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v3
@@ -27,13 +26,21 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'temurin'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        distribution: 'adopt'
+    - uses: gradle/gradle-build-action@v2
       with:
+        gradle-version: 7.4
         arguments: build
-        
-    - uses: actions/upload-artifact@v3
+    - run: gradle.bat buildNeeded
+      shell: cmd
+    - name: Run a cmd script
+      run: tree /F /A ${{ github.workspace }}
+      shell: cmd
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        name: Package
-        path: build/libs
+        generate_release_notes: true
+        files: ${{ github.workspace }}\build\libs\OneBot-Client-*.jar
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

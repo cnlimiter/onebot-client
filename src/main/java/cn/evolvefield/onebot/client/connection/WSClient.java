@@ -3,9 +3,8 @@ package cn.evolvefield.onebot.client.connection;
 import cn.evolvefield.onebot.client.core.Bot;
 import cn.evolvefield.onebot.client.handler.ActionHandler;
 import cn.evolvefield.onebot.sdk.util.json.JsonsObject;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import org.java_websocket.WebSocket;
+import lombok.val;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
@@ -22,6 +21,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class WSClient extends WebSocketClient {
     public static final Logger log = LoggerFactory.getLogger("WSClient");
+    private static final String META_EVENT = "meta_event_type";
     private final static String API_RESULT_KEY = "echo";
     private static final String FAILED_STATUS = "failed";
     private static final String RESULT_STATUS_KEY = "status";
@@ -49,19 +49,18 @@ public class WSClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         try {
-            JsonObject jsonObject = new JsonsObject(message).get();
+            val jsonObject = new JsonsObject(message);
 
-            if (message != null && !jsonObject.has(HEART_BEAT) && !jsonObject.has(LIFE_CYCLE)) {//过滤心跳
-                log.debug("接收到原始消息{}", jsonObject);
+            if (message != null && !HEART_BEAT.equals(jsonObject.optString(META_EVENT)) ) {//过滤心跳
+                log.debug("接收到原始消息{}", jsonObject.toString());
                 if (jsonObject.has(API_RESULT_KEY)) {
-                    if (FAILED_STATUS.equals(jsonObject.get(RESULT_STATUS_KEY).getAsString())) {
-                        log.debug("请求失败: {}", jsonObject.get("wording").getAsString());
+                    if (FAILED_STATUS.equals(jsonObject.optString(RESULT_STATUS_KEY))) {
+                        log.debug("请求失败: {}", jsonObject.optString("wording"));
                     } else
                         actionHandler.onReceiveActionResp(jsonObject);//请求执行
-                } else {
-                    queue.add(message);//事件监听
+                } else if (!queue.offer(message)){//事件监听
+                    log.error("监听错误: {}", message);
                 }
-
             }
         } catch (
                 JsonSyntaxException e) {

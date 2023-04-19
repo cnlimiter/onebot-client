@@ -6,5 +6,5 @@ package cn.evolvefield.onebot.client.listener;
  * Date: 2022/9/14 16:11
  * Version: 1.0
  */
-public abstract class SimpleListener<T> extends EnableListener<T> {
+public abstract class SimpleEventListener<T> extends EnableEventListener<T> {
 }
