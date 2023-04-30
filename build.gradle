@@ -46,7 +46,7 @@ dependencies {
     compileOnly 'org.slf4j:slf4j-api:2.0.1'
     testRuntimeOnly 'com.google.code.gson:gson:2.8.9'
     testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.1'
-    shadow 'cn.evolvefield.bot:OneBot-SDK:0.2.2-jdk17'
+    shadow 'cn.evolvefield.bot:OneBot-SDK:0.2.3-jdk17'
     shadow 'org.java-websocket:Java-WebSocket:1.5.3'
     //shadow fileTree(include: ['*.jar'], dir: 'libs')
 
