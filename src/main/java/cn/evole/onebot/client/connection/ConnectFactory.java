@@ -1,17 +1,12 @@
-package cn.evolvefield.onebot.client.connection;
+package cn.evole.onebot.client.connection;
 
-import cn.evolvefield.onebot.client.config.BotConfig;
-import cn.evolvefield.onebot.client.core.Bot;
-import cn.evolvefield.onebot.client.handler.ActionHandler;
-import org.java_websocket.WebSocket;
+import cn.evole.onebot.client.config.BotConfig;
+import cn.evole.onebot.client.handler.ActionHandler;
 
 import java.net.URI;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 
-import static cn.evolvefield.onebot.client.connection.WSClient.log;
+import static cn.evole.onebot.client.connection.WSClient.log;
 
 /**
  * Description:
@@ -32,7 +27,7 @@ public class ConnectFactory {
     public ConnectFactory(BotConfig config, BlockingQueue<String> queue){
         this.config = config;
         this.queue = queue;
-        this.actionHandler = new ActionHandler();
+        this.actionHandler = new ActionHandler(config);
         try {
             this.ws = createWebsocketClient();
         }catch (NullPointerException e){

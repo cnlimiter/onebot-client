@@ -1,13 +1,18 @@
-package cn.evolvefield.onebot.client.handler;
+package cn.evole.onebot.client.handler;
 
-import cn.evolvefield.onebot.client.util.ActionSendUtils;
-import cn.evolvefield.onebot.sdk.action.ActionPath;
-import cn.evolvefield.onebot.sdk.util.json.JsonsObject;
+import cn.evole.onebot.client.config.BotConfig;
+import cn.evole.onebot.client.util.ActionSendUtils;
+import cn.evole.onebot.sdk.action.ActionPath;
+import cn.evole.onebot.sdk.util.BotUtils;
+import cn.evole.onebot.sdk.util.json.GsonUtil;
+import cn.evole.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.JsonObject;
+import lombok.Getter;
 import lombok.val;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.java_websocket.WebSocket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +26,7 @@ import java.util.Map;
  */
 
 public class ActionHandler {
-    private static final Logger log = LoggerFactory.getLogger("Action");
+    private static final Logger log = LogManager.getLogger("Action");
     /**
      * 请求回调数据
      */
@@ -30,6 +35,13 @@ public class ActionHandler {
      * 用于标识请求，可以是任何类型的数据，OneBot 将会在调用结果中原样返回
      */
     private int echo = 0;
+
+    @Getter
+    private BotConfig config;
+
+    public ActionHandler(BotConfig config){
+        this.config = config;
+    }
 
     /**
      * 处理响应结果
@@ -56,7 +68,7 @@ public class ActionHandler {
         if (!channel.isOpen()) {
             return null;
         }
-        var reqJson = generateReqJson(action, params);
+        val reqJson = generateReqJson(action, params);
         ActionSendUtils actionSendUtils = new ActionSendUtils(channel, 3000L);
         apiCallbackMap.put(reqJson.get("echo").getAsString(), actionSendUtils);
         JsonsObject result;
@@ -81,7 +93,7 @@ public class ActionHandler {
      * @return 请求数据结构
      */
     private JsonObject generateReqJson(ActionPath action, JsonObject params) {
-        var json = new JsonObject();
+        val json = new JsonObject();
         json.addProperty("action", action.getPath());
         json.add("params", params);
         json.addProperty("echo", echo++);

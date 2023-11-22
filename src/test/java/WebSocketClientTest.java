@@ -1,11 +1,11 @@
-import cn.evolvefield.onebot.client.config.BotConfig;
-import cn.evolvefield.onebot.client.connection.ConnectFactory;
-import cn.evolvefield.onebot.client.core.Bot;
-import cn.evolvefield.onebot.client.handler.EventBus;
-import cn.evolvefield.onebot.client.handler.Handler;
-import cn.evolvefield.onebot.client.listener.SimpleEventListener;
-import cn.evolvefield.onebot.client.listener.impl.GroupMessageEventListener;
-import cn.evolvefield.onebot.sdk.event.message.PrivateMessageEvent;
+import cn.evole.onebot.client.config.BotConfig;
+import cn.evole.onebot.client.connection.ConnectFactory;
+import cn.evole.onebot.client.core.Bot;
+import cn.evole.onebot.client.handler.EventBus;
+import cn.evole.onebot.client.handler.Handler;
+import cn.evole.onebot.client.listener.SimpleEventListener;
+import cn.evole.onebot.client.listener.impl.GroupMessageEventListener;
+import cn.evole.onebot.sdk.event.message.PrivateMessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +29,9 @@ public class WebSocketClientTest {
         Bot bot = service.ws.createBot();
         EventBus dispatchers = new EventBus(blockingQueue);//创建事件分发器
         GroupMessageEventListener groupMessageListener = new GroupMessageEventListener();//自定义监听规则
-        groupMessageListener.addHandler("test", new Handler<cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent>() {
+        groupMessageListener.addHandler("test", new Handler<cn.evole.onebot.sdk.event.message.GroupMessageEvent>() {
             @Override
-            public void handle(cn.evolvefield.onebot.sdk.event.message.GroupMessageEvent groupMessage) {
+            public void handle(cn.evole.onebot.sdk.event.message.GroupMessageEvent groupMessage) {
                 bot.sendGroupMsg(337631140, groupMessage.getMessage(), false);
 
             }

@@ -1,4 +1,4 @@
-package cn.evolvefield.onebot.client.config;
+package cn.evole.onebot.client.config;
 
 import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;
@@ -29,11 +29,13 @@ public class BotConfig {
     private boolean reconnect = true;//是否开启重连
     @Expose
     private int maxReconnectAttempts = 20;//重连间隔
+    @Expose
+    private String msgType = "string";//上报消息类型
     public BotConfig(String url){
-        this(url, "", 0, false, false, true, 20);
+        this(url, "", 0, false, false, true, 20, "string");
     }
 
     public BotConfig(String url, long botId){
-        this(url, "", botId, false, true, true, 20);
+        this(url, "", botId, false, true, true, 20, "string");
     }
 }

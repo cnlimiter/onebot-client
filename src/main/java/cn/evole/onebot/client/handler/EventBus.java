@@ -1,12 +1,15 @@
-package cn.evolvefield.onebot.client.handler;
+package cn.evole.onebot.client.handler;
 
-import cn.evolvefield.onebot.client.listener.EnableEventListener;
-import cn.evolvefield.onebot.client.listener.EventListener;
-import cn.evolvefield.onebot.client.util.ListenerUtils;
-import cn.evolvefield.onebot.sdk.event.Event;
-import cn.evolvefield.onebot.sdk.util.json.GsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import cn.evole.onebot.client.listener.EnableEventListener;
+import cn.evole.onebot.client.listener.EventListener;
+import cn.evole.onebot.client.util.ListenerUtils;
+import cn.evole.onebot.client.util.TransUtils;
+import cn.evole.onebot.sdk.event.Event;
+import cn.evole.onebot.sdk.util.json.GsonUtil;
+import cn.evole.onebot.sdk.util.json.JsonsObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings("unused")
 public class EventBus implements Runnable {
-    private static final Logger log = LoggerFactory.getLogger(EventBus.class);
+    private static final Logger log = LogManager.getLogger(EventBus.class);
     //存储监听器对象
     protected List<EventListener<?>> eventlistenerlist = new ArrayList<>();
     //缓存类型与监听器的关系
@@ -69,12 +72,14 @@ public class EventBus implements Runnable {
             log.debug("消息队列为空");
             return;
         }
-        Class<? extends Event> messageType = ListenerUtils.getMessageType(message);//获取消息对应的实体类型
+        JsonsObject msg = TransUtils.arrayToMsg(new JsonsObject(message));
+        Class<? extends Event> messageType = ListenerUtils.getMessageType(msg);//获取消息对应的实体类型
         if (messageType == null) {
+            log.debug("类型不支持");
             return;
         }
         log.debug(String.format("接收到上报消息内容：%s", messageType));
-        Event bean = GsonUtil.strToJavaBean(message, messageType);//将消息反序列化为对象
+        Event bean = GsonUtil.strToJavaBean(msg.toString(), messageType);//将消息反序列化为对象
         List<EventListener<?>> executes = this.cache.get(messageType);
         if (this.cache.get(messageType) == null){
             executes = getMethod(messageType);
