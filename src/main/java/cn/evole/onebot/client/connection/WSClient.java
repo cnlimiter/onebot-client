@@ -1,27 +1,17 @@
 package cn.evole.onebot.client.connection;
 
-import cn.evole.onebot.client.config.BotConfig;
 import cn.evole.onebot.client.core.Bot;
 import cn.evole.onebot.client.handler.ActionHandler;
 import cn.evole.onebot.client.util.TransUtils;
-import cn.evole.onebot.sdk.action.ActionData;
-import cn.evole.onebot.sdk.entity.ArrayMsg;
-import cn.evole.onebot.sdk.event.message.MessageEvent;
-import cn.evole.onebot.sdk.response.guild.GuildMemberListResp;
-import cn.evole.onebot.sdk.util.BotUtils;
-import cn.evole.onebot.sdk.util.json.GsonUtil;
 import cn.evole.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import lombok.val;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
-
 import java.net.URI;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
