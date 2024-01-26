@@ -9,7 +9,7 @@ _✨ 基于java开发的 [OneBot](https://github.com/howmanybots/onebot/blob/mas
 <hr>
 <p align="center">
     <a href="https://github.com/cnlimiter/onebot-client/issues"><img src="https://img.shields.io/github/issues/cnlimiter/onebot-sdk?style=flat" alt="issues" /></a>
-    <a href="https://maven.nova-committee.cn/#/releases/cn/evolvefield/bot/OneBot-Client"><img src="https://jitci.com/gh/cnlimiter/onebot-sdk/svg"></a>
+    <a href="https://maven.nova-committee.cn/#/releases/cn/evolvefield/oneBotClient/OneBot-Client"><img src="https://jitci.com/gh/cnlimiter/onebot-sdk/svg"></a>
     <a href="https://github.com/cnlimiter/onebot-client/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPLV3-green" alt="License"></a>
     <a href="https://github.com/howmanybots/onebot"><img src="https://img.shields.io/badge/OneBot-v11-blue?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAIVBMVEUAAAAAAAADAwMHBwceHh4UFBQNDQ0ZGRkoKCgvLy8iIiLWSdWYAAAAAXRSTlMAQObYZgAAAQVJREFUSMftlM0RgjAQhV+0ATYK6i1Xb+iMd0qgBEqgBEuwBOxU2QDKsjvojQPvkJ/ZL5sXkgWrFirK4MibYUdE3OR2nEpuKz1/q8CdNxNQgthZCXYVLjyoDQftaKuniHHWRnPh2GCUetR2/9HsMAXyUT4/3UHwtQT2AggSCGKeSAsFnxBIOuAggdh3AKTL7pDuCyABcMb0aQP7aM4AnAbc/wHwA5D2wDHTTe56gIIOUA/4YYV2e1sg713PXdZJAuncdZMAGkAukU9OAn40O849+0ornPwT93rphWF0mgAbauUrEOthlX8Zu7P5A6kZyKCJy75hhw1Mgr9RAUvX7A3csGqZegEdniCx30c3agAAAABJRU5ErkJggg=="></a>
 </p>
@@ -28,9 +28,9 @@ public class WebSocketClientTest {
         LinkedBlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
         ModWebSocketClient service = ConnectFactory.createWebsocketClient(new BotConfig("ws://127.0.0.1:8080"),blockingQueue);
         service.create();//创建websocket客户端
-        Bot bot = service.createBot();//创建机器人实例，以调用api
-        bot.sendGroupMsg(123456, MsgUtils.builder().text("123").build(), true);//发送群消息
-        GroupMemberInfoResp sender = bot.getGroupMemberInfo(123456, 123456, false).getData();//获取响应的群成员信息
+        Bot oneBotClient = service.createBot();//创建机器人实例，以调用api
+        oneBotClient.sendGroupMsg(123456, MsgUtils.builder().text("123").build(), true);//发送群消息
+        GroupMemberInfoResp sender = oneBotClient.getGroupMemberInfo(123456, 123456, false).getData();//获取响应的群成员信息
         System.out.println(sender.toString());//打印
     }
 }

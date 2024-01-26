@@ -31,7 +31,7 @@ public class ConnectFactory {
         try {
             this.ws = createWebsocketClient();
         }catch (NullPointerException e){
-            log.error("▌ §c连接错误，请检查服务端是否开启 §a┈━═☆");
+            WSClient.log.error("▌ §c连接错误，请检查服务端是否开启 §a┈━═☆");
         }
     }
 
@@ -66,7 +66,7 @@ public class ConnectFactory {
             ws = new WSClient(URI.create(url), queue, actionHandler);
             ws.connect();
         }catch (Exception e){
-            log.error("▌ §c{}连接错误，请检查服务端是否开启 §a┈━═☆", url);
+            WSClient.log.error("▌ §c{}连接错误，请检查服务端是否开启 §a┈━═☆", url);
         }
         return ws;
     }

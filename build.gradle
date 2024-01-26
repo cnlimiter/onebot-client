@@ -32,28 +32,30 @@ configurations {
 
 
 repositories {
-    maven {
-        url "https://maven.nova-committee.cn/releases"
-    }
+    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+    maven { url = "https://maven.nova-committee.cn/releases"}
     mavenCentral()
 }
 
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    compileOnly 'com.google.code.gson:gson:2.8.9'
-    compileOnly 'org.jetbrains:annotations:20.1.0'
+    compileOnly "org.projectlombok:lombok:1.18.24"
+    compileOnly "com.google.code.gson:gson:2.8.9"
+    compileOnly "org.jetbrains:annotations:24.0.1"
+
     compileOnly("org.apache.logging.log4j:log4j-api:2.19.0")
     compileOnly("org.apache.logging.log4j:log4j-core:2.19.0")
-    testCompileOnly 'org.projectlombok:lombok:1.18.24'
-    testRuntimeOnly 'com.google.code.gson:gson:2.8.9'
-    testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.1'
-    shadow "cn.evole.bot:OneBot-SDK:${sdk_version}"
-    shadow 'org.java-websocket:Java-WebSocket:1.5.3'
+    testCompileOnly "org.projectlombok:lombok:1.18.24"
+    testRuntimeOnly "com.google.code.gson:gson:2.8.9"
+    testRuntimeOnly "org.slf4j:slf4j-simple:2.0.6"
 
-    annotationProcessor 'org.java-websocket:Java-WebSocket:1.5.3'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+    shadow "net.kyori:event-api:${eventbus_version}"
+    shadow "net.kyori:event-method:${eventbus_version}"
+    shadow "cn.evole.bot:OneBot-SDK:${sdk_version}"
+    shadow "org.java-websocket:Java-WebSocket:${websocket_version}"
+
+    annotationProcessor "org.projectlombok:lombok:1.18.24"
+    testAnnotationProcessor "org.projectlombok:lombok:1.18.24"
 
 }
 
@@ -68,7 +70,7 @@ shadowJar {
     configurations = [project.configurations.shadow]
     relocate 'org.java_websocket', "cn.evole.onebot.sdk.websocket"
     dependencies {
-        exclude(dependency('org.slf4j:slf4j-api:2.0.1'))
+        exclude(dependency('org.slf4j:slf4j-api:2.0.6'))
     }
     archiveClassifier = ""
     archiveBaseName.set(project.archives_base_name)
