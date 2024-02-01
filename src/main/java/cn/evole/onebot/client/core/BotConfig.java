@@ -37,6 +37,6 @@ public class BotConfig {
     }
 
     public BotConfig(String url, long botId){
-        this(url, "", botId, false, true, true, 20, "string");
+        this(url, "", botId, false, false, true, 20, "string");
     }
 }

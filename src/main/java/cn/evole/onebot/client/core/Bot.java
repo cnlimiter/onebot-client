@@ -1,7 +1,7 @@
 package cn.evole.onebot.client.core;
 
 
-import cn.evole.onebot.client.instances.action.ActionHandler;
+import cn.evole.onebot.client.instances.action.ActionFactory;
 import cn.evole.onebot.sdk.action.ActionData;
 import cn.evole.onebot.sdk.action.ActionList;
 import cn.evole.onebot.sdk.action.ActionPath;
@@ -38,7 +38,7 @@ import org.java_websocket.WebSocket;
 @SuppressWarnings("unused")
 public class Bot {
 
-    private final ActionHandler actionHandler;
+    private final ActionFactory actionFactory;
 
     @Getter
     @Setter
@@ -46,11 +46,11 @@ public class Bot {
 
     /**
      * @param channel                    {@link WebSocket}
-     * @param actionHandler              {@link ActionHandler}
+     * @param actionFactory              {@link ActionFactory}
      */
-    public Bot(WebSocket channel, ActionHandler actionHandler) {
+    public Bot(WebSocket channel, ActionFactory actionFactory) {
         this.channel = channel;
-        this.actionHandler = actionHandler;
+        this.actionFactory = actionFactory;
     }
 
     /**
@@ -88,7 +88,7 @@ public class Bot {
         params.addProperty("user_id", userId);
         params.addProperty("message", msg);
         params.addProperty("auto_escape", autoEscape);
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
     }
 
@@ -106,7 +106,7 @@ public class Bot {
         params.addProperty("user_id", userId);
         params.add("message", msg);
         params.addProperty("auto_escape", autoEscape);
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
     }
 
@@ -125,7 +125,7 @@ public class Bot {
         params.addProperty("message", msg);
         params.addProperty("auto_escape", autoEscape);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
 
     }
@@ -145,7 +145,7 @@ public class Bot {
         params.add("message", msg);
         params.addProperty("auto_escape", autoEscape);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
 
     }
@@ -166,7 +166,7 @@ public class Bot {
             params.addProperty("guild_id", guildId);
             params.addProperty("next_token", nextToken);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GuildMemberListResp>>() {
         }.getType()) : null;
     }
@@ -186,7 +186,7 @@ public class Bot {
             params.addProperty("channel_id", channelId);
             params.addProperty("message", msg);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GuildMsgId>>() {
         }.getType()) : null;
     }
@@ -206,7 +206,7 @@ public class Bot {
         params.addProperty("channel_id", channelId);
         params.add("message", msg);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GuildMsgId>>() {
         }.getType()) : null;
     }
@@ -224,7 +224,7 @@ public class Bot {
             params.addProperty("message_id", guildMsgId);
             params.addProperty("no_cache", noCache);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GetGuildMsgResp>>() {
         }.getType()) : null;
     }
@@ -236,7 +236,7 @@ public class Bot {
      */
     public ActionData<GuildServiceProfileResp> getGuildServiceProfile() {
         val action = ActionPathEnum.GET_GUILD_SERVICE_PROFILE;
-        val result = actionHandler.action(channel, action, null);
+        val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GuildServiceProfileResp>>() {
         }.getType()) : null;
     }
@@ -248,7 +248,7 @@ public class Bot {
      */
     public ActionList<GuildListResp> getGuildList() {
         val action = ActionPathEnum.GET_GUILD_LIST;
-        val result = actionHandler.action(channel, action, null);
+        val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionList<GuildListResp>>() {
         }.getType()) : null;
     }
@@ -264,7 +264,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("guild_id", guildId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GuildMetaByGuestResp>>() {
         }.getType()) : null;
     }
@@ -282,7 +282,7 @@ public class Bot {
             params.addProperty("guild_id", guildId);
             params.addProperty("no_cache", noCache);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionList<ChannelInfoResp>>() {
         }.getType()) : null;
     }
@@ -300,7 +300,7 @@ public class Bot {
             params.addProperty("guild_id", guildId);
             params.addProperty("user_id", userId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GuildMemberProfileResp>>() {
         }.getType()) : null;
     }
@@ -316,7 +316,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("message_id", msgId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GetMsgResp>>() {
         }.getType()) : null;
     }
@@ -332,7 +332,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("message_id", msgId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(), ActionRaw.class) : null;
     }
 
@@ -351,7 +351,7 @@ public class Bot {
             params.addProperty("user_id", userId);
             params.addProperty("reject_add_request", rejectAddRequest);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -370,7 +370,7 @@ public class Bot {
             params.addProperty("user_id", userId);
             params.addProperty("duration", duration);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -387,7 +387,7 @@ public class Bot {
             params.addProperty("group_id", groupId);
             params.addProperty("enable", enable);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -406,7 +406,7 @@ public class Bot {
             params.addProperty("user_id", userId);
             params.addProperty("enable", enable);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -423,7 +423,7 @@ public class Bot {
             params.addProperty("group_id", groupId);
             params.addProperty("enable", enable);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -442,7 +442,7 @@ public class Bot {
             params.addProperty("user_id", userId);
             params.addProperty("card", card);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -459,7 +459,7 @@ public class Bot {
             params.addProperty("group_id", groupId);
             params.addProperty("group_name", groupName);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -476,7 +476,7 @@ public class Bot {
             params.addProperty("group_id", groupId);
             params.addProperty("is_dismiss", isDismiss);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -497,7 +497,7 @@ public class Bot {
             params.addProperty("special_title", specialTitle);
             params.addProperty("duration", duration);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -516,7 +516,7 @@ public class Bot {
             params.addProperty("approve", approve);
             params.addProperty("remark", remark);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -537,7 +537,7 @@ public class Bot {
             params.addProperty("approve", approve);
             params.addProperty("reason", reason);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -548,7 +548,7 @@ public class Bot {
      */
     public ActionData<LoginInfoResp> getLoginInfo() {
         val action = ActionPathEnum.GET_LOGIN_INFO;
-        val result = actionHandler.action(channel, action, null);
+        val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<LoginInfoResp>>() {
         }.getType()) : null;
     }
@@ -566,7 +566,7 @@ public class Bot {
             params.addProperty("user_id", userId);
             params.addProperty("no_cache", noCache);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<StrangerInfoResp>>() {
         }.getType()) : null;
     }
@@ -578,7 +578,7 @@ public class Bot {
      */
     public ActionList<FriendInfoResp> getFriendList() {
         val action = ActionPathEnum.GET_FRIEND_LIST;
-        val result = actionHandler.action(channel, action, null);
+        val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionList<FriendInfoResp>>() {
         }.getType()) : null;
     }
@@ -594,7 +594,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("friend_id", friendId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -611,7 +611,7 @@ public class Bot {
             params.addProperty("group_id", groupId);
             params.addProperty("no_cache", noCache);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GroupInfoResp>>() {
         }.getType()) : null;
     }
@@ -623,7 +623,7 @@ public class Bot {
      */
     public ActionList<GroupInfoResp> getGroupList() {
         val action = ActionPathEnum.GET_GROUP_LIST;
-        val result = actionHandler.action(channel, action, null);
+        val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionList<GroupInfoResp>>() {
         }.getType()) : null;
     }
@@ -643,7 +643,7 @@ public class Bot {
             params.addProperty("user_id", userId);
             params.addProperty("no_cache", noCache);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GroupMemberInfoResp>>() {
         }.getType()) : null;
     }
@@ -659,7 +659,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionList<GroupMemberInfoResp>>() {
         }.getType()) : null;
     }
@@ -677,7 +677,7 @@ public class Bot {
             params.addProperty("group_id", groupId);
             params.addProperty("type", type);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GroupHonorInfoResp>>() {
         }.getType()) : null;
     }
@@ -689,7 +689,7 @@ public class Bot {
      */
     public ActionData<BooleanResp> canSendImage() {
         val action = ActionPathEnum.CAN_SEND_IMAGE;
-        val result = actionHandler.action(channel, action, null);
+        val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<BooleanResp>>() {
         }.getType()) : null;
     }
@@ -701,7 +701,7 @@ public class Bot {
      */
     public ActionData<BooleanResp> canSendRecord() {
         val action = ActionPathEnum.CAN_SEND_RECORD;
-        val result = actionHandler.action(channel, action, null);
+        val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<BooleanResp>>() {
         }.getType()) : null;
     }
@@ -722,7 +722,7 @@ public class Bot {
             params.addProperty("file", file);
             params.addProperty("cache", cache);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -738,7 +738,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("url", url);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<CheckUrlSafelyResp>>() {
         }.getType()) : null;
     }
@@ -756,7 +756,7 @@ public class Bot {
             params.addProperty("group_id", groupId);
             params.addProperty("content", content);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -771,7 +771,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GroupAtAllRemainResp>>() {
         }.getType()) : null;
     }
@@ -795,7 +795,7 @@ public class Bot {
             params.addProperty("name", name);
             params.addProperty("folder", folder);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -816,7 +816,7 @@ public class Bot {
             params.addProperty("file", file);
             params.addProperty("name", name);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -837,7 +837,7 @@ public class Bot {
             params.add("anonymous", new JsonsObject(an).get());
             params.addProperty("duration", duration);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -856,7 +856,7 @@ public class Bot {
             params.addProperty("flag", flag);
             params.addProperty("duration", duration);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -875,7 +875,7 @@ public class Bot {
             params.addProperty("thread_count", threadCount);
             params.addProperty("headers", headers);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<DownloadFileResp>>() {
         }.getType()) : null;
     }
@@ -891,7 +891,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("url", url);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<DownloadFileResp>>() {
         }.getType()) : null;
 
@@ -910,7 +910,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GroupFilesResp>>() {
         }.getType()) : null;
     }
@@ -928,7 +928,7 @@ public class Bot {
             params.addProperty("group_id", groupId);
             params.addProperty("folder_id", folderId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<GroupFilesResp>>() {
         }.getType()) : null;
     }
@@ -942,7 +942,7 @@ public class Bot {
      */
     @SuppressWarnings("rawtypes")
     public ActionData customRequest(ActionPath action, JsonObject params) {
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionData.class) : null;
     }
 
@@ -957,7 +957,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionList<EssenceMsgResp>>() {
         }.getType()) : null;
     }
@@ -973,7 +973,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("message_id", msgId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -988,7 +988,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("message_id", msgId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -1011,7 +1011,7 @@ public class Bot {
             params.addProperty("college", college);
             params.addProperty("personalNote", personalNote);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -1095,7 +1095,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("content", content);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<WordSlicesResp>>() {
         }.getType()) : null;
     }
@@ -1111,7 +1111,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("no_cache", noCache);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<ClientsResp>>() {
         }.getType()) : null;
     }
@@ -1127,7 +1127,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("image", image);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionData<OcrResp>>() {
         }.getType()) : null;
     }
@@ -1147,7 +1147,7 @@ public class Bot {
             params.addProperty("file", file);
             params.addProperty("name", name);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -1162,7 +1162,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -1177,7 +1177,7 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("user_id", userId);
 
-        val result = actionHandler.action(channel, action, params);
+        val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtil.strToJavaBean(result.toString(),ActionRaw.class) : null;
     }
 
@@ -1188,7 +1188,7 @@ public class Bot {
      */
     public ActionList<UnidirectionalFriendListResp> getUnidirectionalFriendList() {
         val action = ActionPathEnum.GET_UNIDIRECTIONAL_FRIEND_LIST;
-        val result = actionHandler.action(channel, action, null);
+        val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtil.fromJson(result.toString(), new TypeToken<ActionList<UnidirectionalFriendListResp>>() {
         }.getType()) : null;
     }

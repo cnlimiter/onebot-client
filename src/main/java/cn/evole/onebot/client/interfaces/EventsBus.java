@@ -1,4 +1,4 @@
-package cn.evole.onebot.client.interfaces.event;
+package cn.evole.onebot.client.interfaces;
 
 
 import cn.evole.onebot.sdk.event.Event;
@@ -10,7 +10,7 @@ import cn.evole.onebot.sdk.event.Event;
  * @Description:
  */
 
-public interface EventManager {
+public interface EventsBus {
     void callEvent(Event event);
 
     void register(Listener var2);

@@ -19,18 +19,18 @@ import java.util.Map;
  * Version: 1.0
  */
 
-public class ActionHandler {
+public class ActionFactory {
     private final OneBotClient client;
     /**
      * 请求回调数据
      */
-    private final Map<String, ActionSendUtils> apiCallbackMap = new HashMap<>();
+    private final Map<String, ActionSendUnit> apiCallbackMap = new HashMap<>();
     /**
      * 用于标识请求，可以是任何类型的数据，OneBot 将会在调用结果中原样返回
      */
     private int echo = 0;
 
-    public ActionHandler(OneBotClient client){
+    public ActionFactory(OneBotClient client){
         this.client = client;
     }
 
@@ -41,10 +41,10 @@ public class ActionHandler {
      */
     public void onReceiveActionResp(JsonsObject respJson) {
         String echo = respJson.optString("echo");
-        ActionSendUtils actionSendUtils = apiCallbackMap.get(echo);
-        if (actionSendUtils != null) {
+        ActionSendUnit actionSendUnit = apiCallbackMap.get(echo);
+        if (actionSendUnit != null) {
             // 唤醒挂起的线程
-            actionSendUtils.onCallback(respJson);
+            actionSendUnit.onCallback(respJson);
             apiCallbackMap.remove(echo);
         }
     }
@@ -60,11 +60,11 @@ public class ActionHandler {
             return null;
         }
         val reqJson = generateReqJson(action, params);
-        ActionSendUtils actionSendUtils = new ActionSendUtils(client, channel);
-        apiCallbackMap.put(reqJson.get("echo").getAsString(), actionSendUtils);
+        ActionSendUnit actionSendUnit = new ActionSendUnit(client, channel);
+        apiCallbackMap.put(reqJson.get("echo").getAsString(), actionSendUnit);
         JsonsObject result;
         try {
-            result = actionSendUtils.send(reqJson);
+            result = actionSendUnit.send(reqJson);
         } catch (Exception e) {
             client.getLogger().warn("Request failed: {}", e.getMessage());
             val result1 = new JsonObject();

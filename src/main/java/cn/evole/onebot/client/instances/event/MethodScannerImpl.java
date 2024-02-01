@@ -1,7 +1,7 @@
 package cn.evole.onebot.client.instances.event;
 
 import cn.evole.onebot.client.annotations.EventHandler;
-import cn.evole.onebot.client.interfaces.event.Listener;
+import cn.evole.onebot.client.interfaces.Listener;
 import net.kyori.event.PostOrders;
 import net.kyori.event.method.MethodScanner;
 import org.checkerframework.checker.nullness.qual.NonNull;

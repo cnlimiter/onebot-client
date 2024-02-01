@@ -2,7 +2,7 @@ package cn.evole.onebot.client.instances.event;
 
 import cn.evole.onebot.client.OneBotClient;
 import cn.evole.onebot.client.connection.WSClient;
-import cn.evole.onebot.client.interfaces.event.Handler;
+import cn.evole.onebot.client.interfaces.Handler;
 import cn.evole.onebot.client.utils.TransUtils;
 import cn.evole.onebot.sdk.event.Event;
 import cn.evole.onebot.sdk.event.message.GroupMessageEvent;
@@ -30,12 +30,10 @@ public class HandlerImpl implements Handler {
     private static final String META_LIFE_CYCLE = "lifecycle";
 
     protected final OneBotClient client;
-    protected final WSClient ws;
     protected final Object lck = new Object();
 
-    public HandlerImpl(OneBotClient client, WSClient ws) {
+    public HandlerImpl(OneBotClient client) {
         this.client = client;
-        this.ws = ws;
     }
 
     @Override
@@ -43,6 +41,7 @@ public class HandlerImpl implements Handler {
         try {
             if (msg == null) client.getLogger().warn("▌ §c消息体为空");
             val json = TransUtils.arrayToMsg(new JsonsObject(msg));
+            client.getLogger().debug(json.toString());
             if (!META_HEART_BEAT.equals(json.optString(META_EVENT))) {
                 client.getEventExecutor().execute(() -> {
                     synchronized (lck) {
@@ -64,7 +63,7 @@ public class HandlerImpl implements Handler {
             return;
         }
         if (!executeCommand(event)) {
-            client.getEventManager().callEvent(event);
+            client.getEventsBus().callEvent(event);
         }
     }
 
@@ -75,7 +74,7 @@ public class HandlerImpl implements Handler {
             if (RESULT_STATUS_FAILED.equals(json.optString(RESULT_STATUS_KEY))) {
                 client.getLogger().debug("▌ §c请求失败: {}", json.optString("wording"));
             } else
-                ws.getActionHandler().onReceiveActionResp(json);//请求执行
+                client.getActionFactory().onReceiveActionResp(json);//请求执行
         }
     }
 

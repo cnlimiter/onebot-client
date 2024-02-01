@@ -11,7 +11,6 @@ import cn.evole.onebot.sdk.map.MessageMap;
 import cn.evole.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import lombok.val;
 
 /**
@@ -23,11 +22,12 @@ import lombok.val;
 
 public class EventFactory {
     protected final OneBotClient client;
-    protected final EventManagerImpl eventManager;
+    protected final EventsBusImpl eventManager;
     protected final Gson gson;
+
     public EventFactory(OneBotClient client) {
         this.client = client;
-        this.eventManager = ((EventManagerImpl) client.getEventManager());
+        this.eventManager = ((EventsBusImpl) client.getEventsBus());
         this.gson = new GsonBuilder().create();
     }
 
@@ -35,15 +35,16 @@ public class EventFactory {
     public Event createEvent(JsonsObject json) {
         final Class<? extends Event> eventType = parseEventType(json);
         if (eventType == null) {
-            return null; // unknown event type
+            return null; // 未知的消息类型
         }
         if (!eventManager.isSubscribed(eventType)) {
-            // if not message event, ensure command system can receive event.
+            // 如果不是消息事件，请确保命令系统可以接收事件。
             if (eventType != GroupMessageEvent.class
                     && eventType != PrivateMessageEvent.class
                     && eventType != WholeMessageEvent.class
                     && eventType != GuildMessageEvent.class
             ) {
+                client.getLogger().warn("▌ 命令系统尚未支持");
                 return null;
             }
         }
@@ -101,7 +102,10 @@ public class EventFactory {
                 break;
             }
         }
-        if (type.isEmpty()) client.getLogger().error("");
+        if (type.isEmpty()) {
+            client.getLogger().warn("▌ 未知消息类型");
+            return null;
+        }
         return MessageMap.messageMap.get(type);
     }
 }

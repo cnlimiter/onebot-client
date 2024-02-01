@@ -1,6 +1,6 @@
 package cn.evole.onebot.client.instances.event;
 
-import cn.evole.onebot.client.interfaces.event.Listener;
+import cn.evole.onebot.client.interfaces.Listener;
 import cn.evole.onebot.sdk.event.Event;
 import net.kyori.event.method.EventExecutor;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -28,7 +28,7 @@ public class EventExecutorFactoryImpl implements EventExecutor.Factory<Event, Li
         method.setAccessible(true);
         final Class<? extends Event> actualEventType = method.getParameterTypes()[0].asSubclass(Event.class);
         if (Modifier.isAbstract(actualEventType.getModifiers())) {
-            throw new IllegalArgumentException("You cannot create listener for an abstract event type.");
+            throw new IllegalArgumentException("▌ 不能为抽象事件类型创建侦听器");
         }
         final MethodHandle handle = MethodHandles.lookup().unreflect(method).bindTo(object);
         return (listener, event) -> {

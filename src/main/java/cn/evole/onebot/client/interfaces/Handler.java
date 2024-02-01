@@ -1,4 +1,4 @@
-package cn.evole.onebot.client.interfaces.event;
+package cn.evole.onebot.client.interfaces;
 
 import com.google.gson.JsonObject;
 

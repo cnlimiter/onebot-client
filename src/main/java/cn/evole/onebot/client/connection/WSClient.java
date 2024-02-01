@@ -2,20 +2,13 @@ package cn.evole.onebot.client.connection;
 
 import cn.evole.onebot.client.OneBotClient;
 import cn.evole.onebot.client.core.Bot;
-import cn.evole.onebot.client.instances.action.ActionHandler;
+import cn.evole.onebot.client.instances.action.ActionFactory;
 import cn.evole.onebot.client.instances.event.HandlerImpl;
-import cn.evole.onebot.client.utils.TransUtils;
-import cn.evole.onebot.sdk.util.json.JsonsObject;
-import com.google.gson.JsonSyntaxException;
 import lombok.Getter;
-import lombok.val;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Project: onebot-client
@@ -26,17 +19,17 @@ import java.util.concurrent.BlockingQueue;
 public class WSClient extends WebSocketClient {
     private final OneBotClient client;
     private final HandlerImpl handler;
-    @Getter private final ActionHandler actionHandler;
+    @Getter private final ActionFactory actionFactory;
 
-    public WSClient(OneBotClient client, URI uri, ActionHandler actionHandler) {
+    public WSClient(OneBotClient client, URI uri, ActionFactory actionFactory) {
         super(uri);
         this.client = client;
-        this.actionHandler = actionHandler;
-        this.handler = new HandlerImpl(client, this);
+        this.actionFactory = actionFactory;
+        this.handler = new HandlerImpl(client);
     }
 
     public Bot createBot(){
-        return new Bot(this, actionHandler);
+        return new Bot(this, actionFactory);
     }
 
     @Override

@@ -1,9 +1,8 @@
-package cn.evole.onebot.client.util;
+package cn.evole.onebot.client.instances.action;
 
+import cn.evole.onebot.client.OneBotClient;
 import cn.evole.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.JsonObject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.java_websocket.WebSocket;
 
 import java.io.IOException;
@@ -14,20 +13,24 @@ import java.io.IOException;
  * Date: 2022/9/14 15:06
  * Version: 1.0
  */
-public class ActionSendUtils{
-    private static final Logger log = LogManager.getLogger(ActionSendUtils.class);
-
+public class ActionSendUnit {
+    private final OneBotClient client;
     private final WebSocket channel;
-
     private final long requestTimeout;
-
+    protected final Object lck = new Object();
     private JsonsObject resp;
+
+
+    public ActionSendUnit(OneBotClient client, WebSocket channel) {
+        this(client, channel, 3000L);
+    }
 
     /**
      * @param channel        {@link WebSocket}
      * @param requestTimeout Request Timeout
      */
-    public ActionSendUtils(WebSocket channel, Long requestTimeout) {
+    public ActionSendUnit(OneBotClient client, WebSocket channel, Long requestTimeout) {
+        this.client = client;
         this.channel = channel;
         this.requestTimeout = requestTimeout;
     }
@@ -39,11 +42,11 @@ public class ActionSendUtils{
      * @throws InterruptedException exception
      */
     public JsonsObject send(JsonObject req) throws IOException, InterruptedException {
+        client.getLogger().debug(String.format("▌ [Action] %s", req.toString()));
         synchronized (channel) {
-            log.debug(String.format("[Action] %s", req.toString()));
             channel.send(req.toString());
         }
-        synchronized (this) {
+        synchronized (lck) {
             this.wait(requestTimeout);
         }
         return resp;
@@ -54,8 +57,8 @@ public class ActionSendUtils{
      */
     public void onCallback(JsonsObject resp) {
         this.resp = resp;
-        synchronized (this) {
-            this.notify();
+        synchronized (lck) {
+            lck.notify();
         }
     }
 }
