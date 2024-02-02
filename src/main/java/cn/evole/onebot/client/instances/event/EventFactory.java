@@ -8,9 +8,8 @@ import cn.evole.onebot.sdk.event.message.GuildMessageEvent;
 import cn.evole.onebot.sdk.event.message.PrivateMessageEvent;
 import cn.evole.onebot.sdk.event.message.WholeMessageEvent;
 import cn.evole.onebot.sdk.map.MessageMap;
-import cn.evole.onebot.sdk.util.json.JsonsObject;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import cn.evole.onebot.sdk.util.json.GsonUtils;
+import com.google.gson.JsonObject;
 import lombok.val;
 
 /**
@@ -23,16 +22,14 @@ import lombok.val;
 public class EventFactory {
     protected final OneBotClient client;
     protected final EventsBusImpl eventManager;
-    protected final Gson gson;
 
     public EventFactory(OneBotClient client) {
         this.client = client;
         this.eventManager = ((EventsBusImpl) client.getEventsBus());
-        this.gson = new GsonBuilder().create();
     }
 
 
-    public Event createEvent(JsonsObject json) {
+    public Event createEvent(JsonObject json) {
         final Class<? extends Event> eventType = parseEventType(json);
         if (eventType == null) {
             return null; // 未知的消息类型
@@ -49,17 +46,17 @@ public class EventFactory {
             }
         }
 
-        return this.gson.fromJson(json.get(), eventType);
+        return GsonUtils.fromJson(json, eventType);
     }
 
-    protected Class<? extends Event> parseEventType(JsonsObject object) {
-        String type = "";
-        val json = TransUtils.arrayToMsg(object);
-        String postType = json.optString("post_type");
+    protected Class<? extends Event> parseEventType(JsonObject rawJson) {
+        String type;
+        String postType = GsonUtils.getAsString(rawJson, "post_type");
         switch (postType){
             case "message": {
                 //消息类型
-                switch (json.optString("message_type")){
+                val json = TransUtils.arrayToMsg(rawJson);
+                switch (GsonUtils.getAsString(json, "message_type")){
                     case "group": {
                         //群聊消息类型
                         type = "groupMessage";
@@ -84,17 +81,17 @@ public class EventFactory {
             }
             case "request": {
                 //请求类型
-                type = json.optString("request_type");
+                type = GsonUtils.getAsString(rawJson, "request_type");
                 break;
             }
             case "notice": {
                 //通知类型
-                type = json.optString("notice_type");
+                type = GsonUtils.getAsString(rawJson,"notice_type");
                 break;
             }
             case "meta_event": {
                 //周期类型
-                type = json.optString("meta_event_type");
+                type = GsonUtils.getAsString(rawJson,"meta_event_type");
                 break;
             }
             default: {

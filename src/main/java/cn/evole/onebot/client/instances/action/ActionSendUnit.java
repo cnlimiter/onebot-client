@@ -1,7 +1,6 @@
 package cn.evole.onebot.client.instances.action;
 
 import cn.evole.onebot.client.OneBotClient;
-import cn.evole.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.JsonObject;
 import org.java_websocket.WebSocket;
 
@@ -18,7 +17,7 @@ public class ActionSendUnit {
     private final WebSocket channel;
     private final long requestTimeout;
     protected final Object lck = new Object();
-    private JsonsObject resp;
+    private JsonObject resp;
 
 
     public ActionSendUnit(OneBotClient client, WebSocket channel) {
@@ -41,7 +40,7 @@ public class ActionSendUnit {
      * @throws IOException          exception
      * @throws InterruptedException exception
      */
-    public JsonsObject send(JsonObject req) throws IOException, InterruptedException {
+    public JsonObject send(JsonObject req) throws IOException, InterruptedException {
         client.getLogger().debug(String.format("▌ [Action] %s", req.toString()));
         synchronized (channel) {
             channel.send(req.toString());
@@ -55,7 +54,7 @@ public class ActionSendUnit {
     /**
      * @param resp Response json data
      */
-    public void onCallback(JsonsObject resp) {
+    public void onCallback(JsonObject resp) {
         this.resp = resp;
         synchronized (lck) {
             lck.notify();

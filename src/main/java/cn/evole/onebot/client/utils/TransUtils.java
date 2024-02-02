@@ -2,8 +2,8 @@ package cn.evole.onebot.client.utils;
 
 import cn.evole.onebot.sdk.entity.ArrayMsg;
 import cn.evole.onebot.sdk.util.BotUtils;
-import cn.evole.onebot.sdk.util.json.GsonUtil;
-import cn.evole.onebot.sdk.util.json.JsonsObject;
+import cn.evole.onebot.sdk.util.json.GsonUtils;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
@@ -17,12 +17,12 @@ import java.util.List;
 
 public class TransUtils {
 
-    public static JsonsObject arrayToMsg(JsonsObject json){
-        if (json.has("message") && json.get().get("message").isJsonArray()){
-            List<ArrayMsg> msg = GsonUtil.getGson().fromJson(json.get().getAsJsonArray("message"), new TypeToken<List<ArrayMsg>>() {
+    public static JsonObject arrayToMsg(JsonObject json){
+        if (json.has("message") && GsonUtils.isArrayNode(json, "message")){
+            List<ArrayMsg> msg = GsonUtils.fromJson(json.getAsJsonArray("message"), new TypeToken<List<ArrayMsg>>() {
             }.getType());
             String code = BotUtils.arrayMsgToCode(msg);
-            json.get().addProperty("message", code);
+            json.addProperty("array_msg", code);
         }
         return json;
     }

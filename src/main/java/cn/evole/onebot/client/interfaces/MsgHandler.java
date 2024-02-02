@@ -1,7 +1,5 @@
 package cn.evole.onebot.client.interfaces;
 
-import com.google.gson.JsonObject;
-
 /**
  * @Project: onebot-client
  * @Author: cnlimiter
@@ -9,7 +7,7 @@ import com.google.gson.JsonObject;
  * @Description:
  */
 
-public interface Handler {
+public interface MsgHandler {
     void handle(String msg);
 
 }

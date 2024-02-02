@@ -2,9 +2,6 @@ package cn.evole.onebot.client.connection;
 
 import cn.evole.onebot.client.OneBotClient;
 import cn.evole.onebot.client.core.Bot;
-import cn.evole.onebot.client.instances.action.ActionFactory;
-import cn.evole.onebot.client.instances.event.HandlerImpl;
-import lombok.Getter;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -18,18 +15,14 @@ import java.net.URI;
  */
 public class WSClient extends WebSocketClient {
     private final OneBotClient client;
-    private final HandlerImpl handler;
-    @Getter private final ActionFactory actionFactory;
 
-    public WSClient(OneBotClient client, URI uri, ActionFactory actionFactory) {
+    public WSClient(OneBotClient client, URI uri) {
         super(uri);
         this.client = client;
-        this.actionFactory = actionFactory;
-        this.handler = new HandlerImpl(client);
     }
 
     public Bot createBot(){
-        return new Bot(this, actionFactory);
+        return new Bot(this, client.getActionFactory());
     }
 
     @Override
@@ -39,7 +32,7 @@ public class WSClient extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        handler.handle(message);
+        client.getMsgHandler().handle(message);
     }
 
     @Override

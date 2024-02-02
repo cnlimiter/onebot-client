@@ -1,12 +1,12 @@
 package cn.evole.onebot.client;
 
-import cn.evole.onebot.client.core.BotConfig;
 import cn.evole.onebot.client.connection.WSClient;
 import cn.evole.onebot.client.core.Bot;
+import cn.evole.onebot.client.core.BotConfig;
 import cn.evole.onebot.client.instances.action.ActionFactory;
 import cn.evole.onebot.client.instances.event.EventFactory;
 import cn.evole.onebot.client.instances.event.EventsBusImpl;
-import cn.evole.onebot.client.instances.event.HandlerImpl;
+import cn.evole.onebot.client.instances.event.MsgHandlerImpl;
 import cn.evole.onebot.client.interfaces.EventsBus;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
@@ -31,9 +31,9 @@ public final class OneBotClient {
     private final Logger logger;
     private final BotConfig config;
     private final EventsBus eventsBus;
+    private final MsgHandlerImpl msgHandler;
     private final EventFactory eventFactory;
     private final ActionFactory actionFactory;
-    private final HandlerImpl handler;
 
     private WSClient ws = null;
     private Bot bot = null;
@@ -42,9 +42,9 @@ public final class OneBotClient {
         this.logger = LogManager.getLogger("OneBot Client");
         this.config = config;
         this.eventsBus = new EventsBusImpl(this);
+        this.msgHandler = new MsgHandlerImpl(this);
         this.eventFactory = new EventFactory(this);
         this.actionFactory = new ActionFactory(this);
-        this.handler = new HandlerImpl(this);
     }
 
     public void create() {
@@ -54,7 +54,7 @@ public final class OneBotClient {
             builder.append(config.getUrl())
                     .append(config.isMirai() ? "/all?verifyKey=" + token + "&qq=" + config.getBotId() : token);
             try {
-                ws = new WSClient(this, URI.create(builder.toString()), actionFactory);
+                ws = new WSClient(this, URI.create(builder.toString()));
                 ws.connect();
                 bot = ws.createBot();
             } catch (Exception e) {
