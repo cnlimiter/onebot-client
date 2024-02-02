@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: event-api-3.0.0.jar event-method-3.0.0.jar OneBot-SDK-0.2.8.
+ jar Java-WebSocket-1.5.5.jar
+
