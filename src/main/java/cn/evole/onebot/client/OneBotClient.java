@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @Getter
 public final class OneBotClient {
     private final ExecutorService eventExecutor = Executors.newFixedThreadPool(2, r -> new Thread(r, "OneBot Event"));
-    public final ExecutorService wsPool = Executors.newFixedThreadPool(2, r -> new Thread(r, "OneBot WS"));
+    private final ExecutorService wsPool = Executors.newFixedThreadPool(2, r -> new Thread(r, "OneBot WS"));
     private final Logger logger;
     private final BotConfig config;
     private final EventsBus eventsBus;
