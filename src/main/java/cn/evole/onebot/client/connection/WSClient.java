@@ -51,7 +51,7 @@ public class WSClient extends WebSocketClient {
     public void onMessage(String message) {
         try {
             val json = TransUtils.arrayToMsg(new JsonsObject(message));
-            log.info(json.toString());
+            log.debug(json.toString());
             if (message != null && !HEART_BEAT.equals(json.optString(META_EVENT)) ) {//过滤心跳
                 log.debug("▌ §c接收到原始消息{}", json.toString());
                 if (json.has(API_RESULT_KEY)) {
