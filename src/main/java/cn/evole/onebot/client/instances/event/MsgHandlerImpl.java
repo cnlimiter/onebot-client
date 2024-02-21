@@ -41,15 +41,16 @@ public class MsgHandlerImpl implements MsgHandler {
         if (msg == null) client.getLogger().warn("▌ §c消息体为空");
         assert msg != null;
         try {
-            val json = TransUtils.arrayToMsg(GsonUtils.parse(msg));
-            client.getLogger().debug(json.toString());
-            if (!META_HEART_BEAT.equals(GsonUtils.getAsString(json, META_EVENT))) {
-                client.getEventExecutor().execute(() -> {
-                    synchronized (lck) {
-                        event(json);
-                    }
-                });
-            }
+            JsonObject json = GsonUtils.parse(msg);
+            if (json.has(META_EVENT)) return;
+            val json2 = TransUtils.arrayToMsg(GsonUtils.parse(msg));
+            client.getLogger().info(json2.toString());
+            client.getEventExecutor().execute(() -> {
+                synchronized (lck) {
+                    event(json2);
+                }
+            });
+
         } catch (
                 JsonSyntaxException e) {
             client.getLogger().error("▌ §cJson语法错误:{}", msg);

@@ -18,11 +18,12 @@ import java.util.List;
 public class TransUtils {
 
     public static JsonObject arrayToMsg(JsonObject json){
+        if (json.has("raw_message")) return json;
         if (json.has("message") && GsonUtils.isArrayNode(json, "message")){
             List<ArrayMsg> msg = GsonUtils.fromJson(json.getAsJsonArray("message"), new TypeToken<List<ArrayMsg>>() {
             }.getType());
             String code = BotUtils.arrayMsgToCode(msg);
-            json.addProperty("array_msg", code);
+            json.addProperty("trans_msg", code);
         }
         return json;
     }

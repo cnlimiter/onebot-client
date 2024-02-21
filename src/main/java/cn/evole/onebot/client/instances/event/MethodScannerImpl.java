@@ -1,6 +1,6 @@
 package cn.evole.onebot.client.instances.event;
 
-import cn.evole.onebot.client.annotations.EventHandler;
+import cn.evole.onebot.client.annotations.SubscribeEvent;
 import cn.evole.onebot.client.interfaces.Listener;
 import net.kyori.event.PostOrders;
 import net.kyori.event.method.MethodScanner;
@@ -24,12 +24,12 @@ public final class MethodScannerImpl implements MethodScanner<Listener> {
 
     @Override
     public boolean shouldRegister(@NonNull Listener listener, @NonNull Method method) {
-        return Modifier.isPublic(method.getModifiers()) && method.isAnnotationPresent(EventHandler.class);
+        return Modifier.isPublic(method.getModifiers()) && method.isAnnotationPresent(SubscribeEvent.class);
     }
 
     @Override
     public int postOrder(@NonNull Listener listener, @NonNull Method method) {
-        return method.getAnnotation(EventHandler.class).internal() ? PostOrders.EARLY : PostOrders.NORMAL;
+        return method.getAnnotation(SubscribeEvent.class).internal() ? PostOrders.EARLY : PostOrders.NORMAL;
     }
 
     @Override

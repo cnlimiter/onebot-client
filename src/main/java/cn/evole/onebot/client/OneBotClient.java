@@ -8,6 +8,7 @@ import cn.evole.onebot.client.instances.event.EventFactory;
 import cn.evole.onebot.client.instances.event.EventsBusImpl;
 import cn.evole.onebot.client.instances.event.MsgHandlerImpl;
 import cn.evole.onebot.client.interfaces.EventsBus;
+import cn.evole.onebot.client.internal.TestHandler;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,6 +62,8 @@ public final class OneBotClient {
                 logger.error("▌ §c{}连接错误，请检查服务端是否开启 §a┈━═☆", URI.create(builder.toString()));
             }
         });
+
+        eventsBus.register(new TestHandler(this));
     }
 
     public boolean close() {
