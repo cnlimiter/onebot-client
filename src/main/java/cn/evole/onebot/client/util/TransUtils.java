@@ -22,7 +22,7 @@ public class TransUtils {
             List<ArrayMsg> msg = GsonUtils.fromJson(json.getAsJsonArray("message"), new TypeToken<List<ArrayMsg>>() {
             }.getType());
             String code = BotUtils.arrayMsgToCode(msg);
-            json.addProperty("array_msg", code);
+            json.addProperty("message", code);
         }
         return json;
     }

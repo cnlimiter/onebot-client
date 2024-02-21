@@ -53,7 +53,7 @@ dependencies {
     shadow "cn.evole.bot:OneBot-SDK:${sdk_version}"
     shadow 'org.java-websocket:Java-WebSocket:1.5.5'
 
-    annotationProcessor 'org.java-websocket:Java-WebSocket:1.5.3'
+    annotationProcessor 'org.java-websocket:Java-WebSocket:1.5.5'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 
