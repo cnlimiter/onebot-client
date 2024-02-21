@@ -1,10 +1,10 @@
-package cn.evole.onebot.client.listener;
+package cn.evole.onebot.client.interfaces.listener;
 
 /**
  * 提供是否开启插件
  * @param <T>
  */
-public abstract class EnableEventListener<T> implements EventListener<T> {
+public abstract class EnableListener<T> implements Listener<T> {
 
     private Boolean enable = true;//默认开启
 

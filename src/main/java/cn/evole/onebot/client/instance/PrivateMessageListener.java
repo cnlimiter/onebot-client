@@ -1,8 +1,8 @@
-package cn.evole.onebot.client.listener.impl;
+package cn.evole.onebot.client.instance;
 
 
-import cn.evole.onebot.client.handler.DefaultEventHandler;
-import cn.evole.onebot.client.handler.Handler;
+import cn.evole.onebot.client.interfaces.handler.DefaultHandler;
+import cn.evole.onebot.client.interfaces.handler.Handler;
 import cn.evole.onebot.sdk.event.message.PrivateMessageEvent;
 
 /**
@@ -11,7 +11,7 @@ import cn.evole.onebot.sdk.event.message.PrivateMessageEvent;
  * Date: 2022/9/14 16:29
  * Version: 1.0
  */
-public class PrivateMessageEventListener extends DefaultEventHandler<PrivateMessageEvent> {
+public class PrivateMessageListener extends DefaultHandler<PrivateMessageEvent> {
     @Override
     public void onMessage(PrivateMessageEvent privateMessage) {
         //处理逻辑

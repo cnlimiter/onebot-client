@@ -1,6 +1,6 @@
-package cn.evole.onebot.client.handler;
+package cn.evole.onebot.client.interfaces.handler;
 
-import cn.evole.onebot.client.listener.SimpleEventListener;
+import cn.evole.onebot.client.interfaces.listener.SimpleListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.Map;
  * Date: 2022/9/14 16:14
  * Version: 1.0
  */
-public abstract class DefaultEventHandler<T> extends SimpleEventListener<T> {
+public abstract class DefaultHandler<T> extends SimpleListener<T> {
     protected Map<String, Handler<T>> handlerMap = new HashMap<>();
 
     public Map<String, Handler<T>> getHandlerMap() {

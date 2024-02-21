@@ -1,4 +1,4 @@
-package cn.evole.onebot.client.handler;
+package cn.evole.onebot.client.interfaces.handler;
 
 /**
  * Description:

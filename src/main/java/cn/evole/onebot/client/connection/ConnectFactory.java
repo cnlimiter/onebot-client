@@ -1,7 +1,7 @@
 package cn.evole.onebot.client.connection;
 
-import cn.evole.onebot.client.config.BotConfig;
-import cn.evole.onebot.client.handler.ActionHandler;
+import cn.evole.onebot.client.core.BotConfig;
+import cn.evole.onebot.client.factory.ActionFactory;
 
 import java.net.URI;
 import java.util.concurrent.BlockingQueue;
@@ -17,7 +17,7 @@ import static cn.evole.onebot.client.connection.WSClient.log;
 public class ConnectFactory {
     private final BotConfig config;
     private final BlockingQueue<String> queue;
-    private final ActionHandler actionHandler;
+    private final ActionFactory actionFactory;
     public WSClient ws;
     /**
      *
@@ -27,7 +27,7 @@ public class ConnectFactory {
     public ConnectFactory(BotConfig config, BlockingQueue<String> queue){
         this.config = config;
         this.queue = queue;
-        this.actionHandler = new ActionHandler(config);
+        this.actionFactory = new ActionFactory(config);
         try {
             this.ws = createWebsocketClient();
         }catch (NullPointerException e){
@@ -38,8 +38,8 @@ public class ConnectFactory {
 
 
     /**
-     * 创建websocket客户端(支持cqhttp和mirai类型)
-     * @return 连接示例
+     * 创建websocket客户端(支持onebot和 mirai类型)
+     * @return 连接实例
      */
     public WSClient createWebsocketClient(){
         StringBuilder builder = new StringBuilder();
@@ -63,7 +63,7 @@ public class ConnectFactory {
         }
         String url = builder.toString();
         try {
-            ws = new WSClient(URI.create(url), queue, actionHandler);
+            ws = new WSClient(URI.create(url), queue, actionFactory);
             ws.connect();
         }catch (Exception e){
             log.error("▌ §c{}连接错误，请检查服务端是否开启 §a┈━═☆", url);

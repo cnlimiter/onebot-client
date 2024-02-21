@@ -1,21 +1,19 @@
-package cn.evole.onebot.client.handler;
+package cn.evole.onebot.client.factory;
 
-import cn.evole.onebot.client.listener.EnableEventListener;
-import cn.evole.onebot.client.listener.EventListener;
+import cn.evole.onebot.client.interfaces.listener.EnableListener;
+import cn.evole.onebot.client.interfaces.listener.Listener;
 import cn.evole.onebot.client.util.ListenerUtils;
 import cn.evole.onebot.client.util.TransUtils;
 import cn.evole.onebot.sdk.event.Event;
-import cn.evole.onebot.sdk.util.json.GsonUtil;
-import cn.evole.onebot.sdk.util.json.JsonsObject;
+import cn.evole.onebot.sdk.util.json.GsonUtils;
+import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 /**
  * Project: onebot-client
@@ -24,32 +22,46 @@ import java.util.concurrent.ConcurrentHashMap;
  * Description:
  */
 @SuppressWarnings("unused")
-public class EventBus implements Runnable {
-    private static final Logger log = LogManager.getLogger(EventBus.class);
+public class ListenerFactory implements Runnable {
+    private static final Logger log = LogManager.getLogger(ListenerFactory.class);
     //存储监听器对象
-    protected List<EventListener<?>> eventlistenerlist = new ArrayList<>();
+    protected List<Listener<?>> eventlistenerlist = new CopyOnWriteArrayList<>();
     //缓存类型与监听器的关系
-    protected Map<Class<? extends Event>, List<EventListener<?>>> cache = new ConcurrentHashMap<>();
+    protected Map<Class<? extends Event>, List<Listener<?>>> cache = new ConcurrentHashMap<>();
     //线程池 用于并发执行队列中的任务
-    protected Thread service;
+    protected ExecutorService service;
     protected BlockingQueue<String> queue;
     private boolean close = false;
 
-    public EventBus(BlockingQueue<String> queue) {
+    public ListenerFactory(BlockingQueue<String> queue) {
         this.queue = queue;
-        this.service = new Thread(this);
-        this.service.start();
     }
 
-    public void addListener(EventListener<?> EventListener) {
-        this.eventlistenerlist.add(EventListener);
+    public void addListener(Listener<?> Listener) {
+        this.eventlistenerlist.add(Listener);
     }
+
+
+    public void start() {
+        start(1);
+    }
+
+    public void start(Integer threadCount) {
+        if (threadCount <= 0) {
+            threadCount = 1;
+        }
+        service = Executors.newFixedThreadPool(threadCount);
+        for (int i = 0; i < threadCount; i++) {
+            service.submit(this);
+        }
+    }
+
 
     public void stop() {
         this.close = true;
         this.cache.clear();
         this.eventlistenerlist.clear();
-        this.service.interrupt();
+        this.service.shutdownNow();
     }
 
     @Override
@@ -72,22 +84,21 @@ public class EventBus implements Runnable {
             log.debug("消息队列为空");
             return;
         }
-        JsonsObject msg = TransUtils.arrayToMsg(new JsonsObject(message));
-        Class<? extends Event> messageType = ListenerUtils.getMessageType(msg);//获取消息对应的实体类型
+        JsonObject msg = TransUtils.arrayToMsg(GsonUtils.parse(message));
+        Class<? extends Event> messageType = ListenerUtils.parseEventType(msg, log);//获取消息对应的实体类型
         if (messageType == null) {
-            log.debug("类型不支持");
             return;
         }
         log.debug(String.format("接收到上报消息内容：%s", messageType));
-        Event bean = GsonUtil.strToJavaBean(msg.toString(), messageType);//将消息反序列化为对象
-        List<EventListener<?>> executes = this.cache.get(messageType);
+        Event bean = GsonUtils.fromJson(msg.toString(), messageType);//将消息反序列化为对象
+        List<Listener<?>> executes = this.cache.get(messageType);
         if (this.cache.get(messageType) == null){
             executes = getMethod(messageType);
             this.cache.put(messageType, executes);
         }
 
-        for (EventListener eventListener : executes) {
-            eventListener.onMessage(bean);//调用监听方法
+        for (Listener listener : executes) {
+            listener.onMessage(bean);//调用监听方法
         }
 
     }
@@ -95,7 +106,7 @@ public class EventBus implements Runnable {
     /**
      * 从队列中获取任务
      *
-     * @return
+     * @return 任务
      */
     protected String getTask() {
         try {
@@ -107,35 +118,35 @@ public class EventBus implements Runnable {
     }
 
     /**
-     * 获取能处理消息类型的处理器
+     * 获取能监听器列表
      *
-     * @param messageType
-     * @return
+     * @param messageType 消息类型
+     * @return 处理完的监听器列表
      */
-    protected List<EventListener<?>> getMethod(Class<? extends Event> messageType) {
-        List<EventListener<?>> eventListeners = new ArrayList<>();
-        for (EventListener<?> eventListener : this.eventlistenerlist) {
+    protected List<Listener<?>> getMethod(Class<? extends Event> messageType) {
+        List<Listener<?>> listeners = new ArrayList<>();
+        for (Listener<?> listener : this.eventlistenerlist) {
             try {
                 try {
-                    eventListener.getClass().getMethod("onMessage", messageType);//判断是否注册监听器
+                    listener.getClass().getMethod("onMessage", messageType);//判断是否注册监听器
                 } catch (NoSuchMethodException e) {
                     continue;//不支持则跳过
                 }
-                if (eventListener instanceof EnableEventListener) {
-                    EnableEventListener<?> enableListener = (EnableEventListener<?>) eventListener;
+                if (listener instanceof EnableListener) {
+                    EnableListener<?> enableListener = (EnableListener<?>) listener;
                     if (!enableListener.enable()) {//检测是否开启该插件
                         continue;
                     }
                 }
-                eventListeners.add(eventListener);//开启后添加入当前类型的插件
+                listeners.add(listener);//开启后添加入当前类型的插件
             } catch (Exception e) {
                 log.error(e.getLocalizedMessage());
             }
         }
-        return eventListeners;
+        return listeners;
     }
 
-    public List<EventListener<?>> getListenerList() {
+    public List<Listener<?>> getListenerList() {
         return this.eventlistenerlist;
     }
 

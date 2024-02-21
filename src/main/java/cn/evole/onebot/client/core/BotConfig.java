@@ -1,4 +1,4 @@
-package cn.evole.onebot.client.config;
+package cn.evole.onebot.client.core;
 
 import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;

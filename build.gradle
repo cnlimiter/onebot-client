@@ -45,11 +45,13 @@ dependencies {
     compileOnly 'org.jetbrains:annotations:20.1.0'
     compileOnly("org.apache.logging.log4j:log4j-api:2.19.0")
     compileOnly("org.apache.logging.log4j:log4j-core:2.19.0")
+
     testCompileOnly 'org.projectlombok:lombok:1.18.24'
     testRuntimeOnly 'com.google.code.gson:gson:2.8.9'
-    testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.1'
+    testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.6'
+
     shadow "cn.evole.bot:OneBot-SDK:${sdk_version}"
-    shadow 'org.java-websocket:Java-WebSocket:1.5.3'
+    shadow 'org.java-websocket:Java-WebSocket:1.5.5'
 
     annotationProcessor 'org.java-websocket:Java-WebSocket:1.5.3'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
@@ -68,7 +70,7 @@ shadowJar {
     configurations = [project.configurations.shadow]
     relocate 'org.java_websocket', "cn.evole.onebot.sdk.websocket"
     dependencies {
-        exclude(dependency('org.slf4j:slf4j-api:2.0.1'))
+        exclude(dependency('org.slf4j:slf4j-api:2.0.6'))
     }
     archiveClassifier = ""
     archiveBaseName.set(project.archives_base_name)

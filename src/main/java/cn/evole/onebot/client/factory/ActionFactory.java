@@ -1,18 +1,15 @@
-package cn.evole.onebot.client.handler;
+package cn.evole.onebot.client.factory;
 
-import cn.evole.onebot.client.config.BotConfig;
-import cn.evole.onebot.client.util.ActionSendUtils;
+import cn.evole.onebot.client.core.BotConfig;
+import cn.evole.onebot.client.util.ActionUtils;
 import cn.evole.onebot.sdk.action.ActionPath;
-import cn.evole.onebot.sdk.util.BotUtils;
-import cn.evole.onebot.sdk.util.json.GsonUtil;
-import cn.evole.onebot.sdk.util.json.JsonsObject;
+import cn.evole.onebot.sdk.util.json.GsonUtils;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.val;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.WebSocket;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +22,12 @@ import java.util.Map;
  * Version: 1.0
  */
 
-public class ActionHandler {
+public class ActionFactory {
     private static final Logger log = LogManager.getLogger("Action");
     /**
      * 请求回调数据
      */
-    private final Map<String, ActionSendUtils> apiCallbackMap = new HashMap<>();
+    private final Map<String, ActionUtils> apiCallbackMap = new HashMap<>();
     /**
      * 用于标识请求，可以是任何类型的数据，OneBot 将会在调用结果中原样返回
      */
@@ -39,7 +36,7 @@ public class ActionHandler {
     @Getter
     private BotConfig config;
 
-    public ActionHandler(BotConfig config){
+    public ActionFactory(BotConfig config){
         this.config = config;
     }
 
@@ -48,12 +45,12 @@ public class ActionHandler {
      *
      * @param respJson 回调结果
      */
-    public void onReceiveActionResp(JsonsObject respJson) {
-        String echo = respJson.optString("echo");
-        ActionSendUtils actionSendUtils = apiCallbackMap.get(echo);
-        if (actionSendUtils != null) {
+    public void onReceiveActionResp(JsonObject respJson) {
+        String echo = GsonUtils.getAsString(respJson, "echo");
+        ActionUtils actionUtils = apiCallbackMap.get(echo);
+        if (actionUtils != null) {
             // 唤醒挂起的线程
-            actionSendUtils.onCallback(respJson);
+            actionUtils.onCallback(respJson);
             apiCallbackMap.remove(echo);
         }
     }
@@ -64,22 +61,20 @@ public class ActionHandler {
      * @param params  请求参数
      * @return 请求结果
      */
-    public JsonsObject action(WebSocket channel, ActionPath action, JsonObject params) {
+    public JsonObject action(WebSocket channel, ActionPath action, JsonObject params) {
         if (!channel.isOpen()) {
             return null;
         }
         val reqJson = generateReqJson(action, params);
-        ActionSendUtils actionSendUtils = new ActionSendUtils(channel, 3000L);
-        apiCallbackMap.put(reqJson.get("echo").getAsString(), actionSendUtils);
-        JsonsObject result;
+        ActionUtils actionUtils = new ActionUtils(channel, 3000L);
+        apiCallbackMap.put(reqJson.get("echo").getAsString(), actionUtils);
+        JsonObject result = new JsonObject();
         try {
-            result = actionSendUtils.send(reqJson);
+            result = actionUtils.send(reqJson);
         } catch (Exception e) {
             log.warn("Request failed: {}", e.getMessage());
-            val result1 = new JsonObject();
-            result1.addProperty("status", "failed");
-            result1.addProperty("retcode", -1);
-            result = new JsonsObject(result1);
+            result.addProperty("status", "failed");
+            result.addProperty("retcode", -1);
         }
         return result;
     }

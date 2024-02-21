@@ -1,9 +1,9 @@
 package cn.evole.onebot.client.connection;
 
 import cn.evole.onebot.client.core.Bot;
-import cn.evole.onebot.client.handler.ActionHandler;
+import cn.evole.onebot.client.factory.ActionFactory;
 import cn.evole.onebot.client.util.TransUtils;
-import cn.evole.onebot.sdk.util.json.JsonsObject;
+import cn.evole.onebot.sdk.util.json.GsonUtils;
 import com.google.gson.JsonSyntaxException;
 import lombok.val;
 import org.apache.logging.log4j.LogManager;
@@ -29,16 +29,16 @@ public class WSClient extends WebSocketClient {
     private static final String HEART_BEAT = "heartbeat";
     private static final String LIFE_CYCLE = "lifecycle";
     private final BlockingQueue<String> queue;
-    private final ActionHandler actionHandler;
+    private final ActionFactory actionFactory;
 
-    public WSClient(URI uri, BlockingQueue<String> queue, ActionHandler actionHandler) {
+    public WSClient(URI uri, BlockingQueue<String> queue, ActionFactory actionFactory) {
         super(uri);
         this.queue = queue;
-        this.actionHandler = actionHandler;
+        this.actionFactory = actionFactory;
     }
 
     public Bot createBot(){
-        return new Bot(this, actionHandler);
+        return new Bot(this, actionFactory);
     }
 
 
@@ -50,18 +50,16 @@ public class WSClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         try {
-            val json = TransUtils.arrayToMsg(new JsonsObject(message));
-            log.debug(json.toString());
-            if (message != null && !HEART_BEAT.equals(json.optString(META_EVENT)) ) {//过滤心跳
-                log.debug("▌ §c接收到原始消息{}", json.toString());
-                if (json.has(API_RESULT_KEY)) {
-                    if (FAILED_STATUS.equals(json.optString(RESULT_STATUS_KEY))) {
-                        log.debug("▌ §c请求失败: {}", json.optString("wording"));
-                    } else
-                        actionHandler.onReceiveActionResp(json);//请求执行
-                } else if (!queue.offer(message)){//事件监听
-                    log.error("▌ §c监听错误: {}", message);
-                }
+            val json = TransUtils.arrayToMsg(GsonUtils.parse(message));
+            if (json.has(META_EVENT)) return;//过滤心跳
+            log.debug("▌ §c接收到原始消息{}", json.toString());
+            if (json.has(API_RESULT_KEY)) {
+                if (FAILED_STATUS.equals(GsonUtils.getAsString(json, RESULT_STATUS_KEY))) {
+                    log.debug("▌ §c请求失败: {}", GsonUtils.getAsString(json, "wording"));
+                } else
+                    actionFactory.onReceiveActionResp(json);//请求执行
+            } else if (!queue.offer(message)){//事件监听
+                log.error("▌ §c监听错误: {}", message);
             }
         } catch (
                 JsonSyntaxException e) {

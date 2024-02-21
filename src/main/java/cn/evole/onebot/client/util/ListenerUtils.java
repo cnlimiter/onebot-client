@@ -1,15 +1,11 @@
 package cn.evole.onebot.client.util;
 
-import cn.evole.onebot.sdk.entity.ArrayMsg;
 import cn.evole.onebot.sdk.event.Event;
 import cn.evole.onebot.sdk.map.MessageMap;
-import cn.evole.onebot.sdk.util.BotUtils;
-import cn.evole.onebot.sdk.util.json.GsonUtil;
-import cn.evole.onebot.sdk.util.json.JsonsObject;
-import com.google.gson.reflect.TypeToken;
+import cn.evole.onebot.sdk.util.json.GsonUtils;
+import com.google.gson.JsonObject;
 import lombok.val;
-
-import java.util.List;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -19,43 +15,66 @@ import java.util.List;
  * Version: 1.0
  */
 public class ListenerUtils {
-    public static Class<? extends Event> getMessageType(String message) {
-        return getMessageType(new JsonsObject(message));
-    }
 
     /**
      * 获取消息对应的实体类型
      *
-     * @param jsonsObject json
+     * @param rawJson json
      * @return
      */
-    public static Class<? extends Event> getMessageType(JsonsObject jsonsObject) {
-        String type = null;
-        val json = TransUtils.arrayToMsg(jsonsObject);
-        String postType = json.optString("post_type");
-        if ("message".equals(postType)) {
-            type = "wholeMessage";
-            //消息类型
-            String messageType = json.optString("message_type");
-            if ("group".equals(messageType)) {
-                //群聊消息类型
-                type = "groupMessage";
-            } else if ("private".equals(messageType)) {
-                //私聊消息类型
-                type = "privateMessage";
-            } else if ("guild".equals(messageType)){
-                //频道消息，暂不支持私信
-                type = "guildMessage";
+    public static Class<? extends Event> parseEventType(JsonObject rawJson, Logger log) {
+        String type;
+        String postType = GsonUtils.getAsString(rawJson, "post_type");
+        switch (postType){
+            case "message": {
+                //消息类型
+                val json = TransUtils.arrayToMsg(rawJson);
+                switch (GsonUtils.getAsString(json, "message_type")){
+                    case "group": {
+                        //群聊消息类型
+                        type = "groupMessage";
+                        break;
+                    }
+                    case "private": {
+                        //私聊消息类型
+                        type = "privateMessage";
+                        break;
+                    }
+                    case "guild": {
+                        //频道消息，暂不支持私信
+                        type = "guildMessage";
+                        break;
+                    }
+                    default: {
+                        type = "wholeMessage";
+                        break;
+                    }
+                }
+                break;
             }
-        } else if ("request".equals(postType)) {
-            //请求类型
-            type = json.optString("request_type");
-        } else if ("notice".equals(postType)) {
-            //通知类型
-            type = json.optString("notice_type");
-        } else if ("meta_event".equals(postType)) {
-            //周期类型
-            type = json.optString("meta_event_type");
+            case "request": {
+                //请求类型
+                type = GsonUtils.getAsString(rawJson, "request_type");
+                break;
+            }
+            case "notice": {
+                //通知类型
+                type = GsonUtils.getAsString(rawJson,"notice_type");
+                break;
+            }
+            case "meta_event": {
+                //周期类型
+                type = GsonUtils.getAsString(rawJson,"meta_event_type");
+                break;
+            }
+            default: {
+                type = "";
+                break;
+            }
+        }
+        if (type.isEmpty()) {
+            log.warn("▌ 未知消息类型");
+            return null;
         }
         return MessageMap.messageMap.get(type);
     }

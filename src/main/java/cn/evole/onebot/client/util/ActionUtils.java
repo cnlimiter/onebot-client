@@ -1,6 +1,5 @@
 package cn.evole.onebot.client.util;
 
-import cn.evole.onebot.sdk.util.json.JsonsObject;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,20 +13,20 @@ import java.io.IOException;
  * Date: 2022/9/14 15:06
  * Version: 1.0
  */
-public class ActionSendUtils{
-    private static final Logger log = LogManager.getLogger(ActionSendUtils.class);
+public class ActionUtils {
+    private static final Logger log = LogManager.getLogger(ActionUtils.class);
 
     private final WebSocket channel;
 
     private final long requestTimeout;
 
-    private JsonsObject resp;
+    private JsonObject resp;
 
     /**
      * @param channel        {@link WebSocket}
      * @param requestTimeout Request Timeout
      */
-    public ActionSendUtils(WebSocket channel, Long requestTimeout) {
+    public ActionUtils(WebSocket channel, Long requestTimeout) {
         this.channel = channel;
         this.requestTimeout = requestTimeout;
     }
@@ -38,7 +37,7 @@ public class ActionSendUtils{
      * @throws IOException          exception
      * @throws InterruptedException exception
      */
-    public JsonsObject send(JsonObject req) throws IOException, InterruptedException {
+    public JsonObject send(JsonObject req) throws IOException, InterruptedException {
         synchronized (channel) {
             log.debug(String.format("[Action] %s", req.toString()));
             channel.send(req.toString());
@@ -52,7 +51,7 @@ public class ActionSendUtils{
     /**
      * @param resp Response json data
      */
-    public void onCallback(JsonsObject resp) {
+    public void onCallback(JsonObject resp) {
         this.resp = resp;
         synchronized (this) {
             this.notify();

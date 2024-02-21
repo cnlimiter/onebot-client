@@ -1,4 +1,4 @@
-package cn.evole.onebot.client.listener;
+package cn.evole.onebot.client.interfaces.listener;
 
 /**
  * Description:
@@ -6,7 +6,7 @@ package cn.evole.onebot.client.listener;
  * Date: 2022/9/14 16:11
  * Version: 1.0
  */
-public interface EventListener<T> {
+public interface Listener<T> {
 
         /**
          * 监听到消息

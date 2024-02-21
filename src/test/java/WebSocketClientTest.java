@@ -1,10 +1,10 @@
-import cn.evole.onebot.client.config.BotConfig;
+import cn.evole.onebot.client.core.BotConfig;
 import cn.evole.onebot.client.connection.ConnectFactory;
 import cn.evole.onebot.client.core.Bot;
-import cn.evole.onebot.client.handler.EventBus;
-import cn.evole.onebot.client.handler.Handler;
-import cn.evole.onebot.client.listener.SimpleEventListener;
-import cn.evole.onebot.client.listener.impl.GroupMessageEventListener;
+import cn.evole.onebot.client.factory.ListenerFactory;
+import cn.evole.onebot.client.interfaces.handler.Handler;
+import cn.evole.onebot.client.interfaces.listener.SimpleListener;
+import cn.evole.onebot.client.instance.GroupMessageListener;
 import cn.evole.onebot.sdk.event.message.PrivateMessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +27,8 @@ public class WebSocketClientTest {
         ConnectFactory service = new ConnectFactory(
                 new BotConfig("ws://127.0.0.1:8080"), blockingQueue);//创建websocket客户端
         Bot bot = service.ws.createBot();
-        EventBus dispatchers = new EventBus(blockingQueue);//创建事件分发器
-        GroupMessageEventListener groupMessageListener = new GroupMessageEventListener();//自定义监听规则
+        ListenerFactory dispatchers = new ListenerFactory(blockingQueue);//创建事件分发器
+        GroupMessageListener groupMessageListener = new GroupMessageListener();//自定义监听规则
         groupMessageListener.addHandler("test", new Handler<cn.evole.onebot.sdk.event.message.GroupMessageEvent>() {
             @Override
             public void handle(cn.evole.onebot.sdk.event.message.GroupMessageEvent groupMessage) {
@@ -37,7 +37,7 @@ public class WebSocketClientTest {
             }
         });//匹配关键字监听
         dispatchers.addListener(groupMessageListener);//注册监听
-        dispatchers.addListener(new SimpleEventListener<PrivateMessageEvent>() {//私聊监听
+        dispatchers.addListener(new SimpleListener<PrivateMessageEvent>() {//私聊监听
             @Override
             public void onMessage(PrivateMessageEvent privateMessage) {
                 logger.info(privateMessage.toString());

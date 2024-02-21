@@ -1,10 +1,9 @@
-import cn.evole.onebot.client.config.BotConfig;
+import cn.evole.onebot.client.core.BotConfig;
 import cn.evole.onebot.client.connection.ConnectFactory;
 import cn.evole.onebot.client.core.Bot;
 import cn.evole.onebot.sdk.action.ActionData;
 import cn.evole.onebot.sdk.entity.MsgId;
 import cn.evole.onebot.sdk.util.MsgUtils;
-import lombok.val;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
