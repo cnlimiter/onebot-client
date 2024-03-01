@@ -3,7 +3,6 @@ package cn.evole.onebot.client.factory;
 import cn.evole.onebot.client.interfaces.listener.EnableListener;
 import cn.evole.onebot.client.interfaces.listener.Listener;
 import cn.evole.onebot.client.util.ListenerUtils;
-import cn.evole.onebot.client.util.TransUtils;
 import cn.evole.onebot.sdk.event.Event;
 import cn.evole.onebot.sdk.util.json.GsonUtils;
 import com.google.gson.JsonObject;
@@ -84,7 +83,7 @@ public class ListenerFactory implements Runnable {
             log.debug("消息队列为空");
             return;
         }
-        JsonObject msg = TransUtils.arrayToMsg(GsonUtils.parse(message));
+        JsonObject msg = GsonUtils.parse(message);
         Class<? extends Event> messageType = ListenerUtils.parseEventType(msg, log);//获取消息对应的实体类型
         if (messageType == null) {
             return;

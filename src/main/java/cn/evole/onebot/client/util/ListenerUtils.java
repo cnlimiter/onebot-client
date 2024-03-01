@@ -20,7 +20,7 @@ public class ListenerUtils {
      * 获取消息对应的实体类型
      *
      * @param rawJson json
-     * @return
+     * @return 对应的event
      */
     public static Class<? extends Event> parseEventType(JsonObject rawJson, Logger log) {
         String type;
@@ -28,8 +28,7 @@ public class ListenerUtils {
         switch (postType){
             case "message": {
                 //消息类型
-                val json = TransUtils.arrayToMsg(rawJson);
-                switch (GsonUtils.getAsString(json, "message_type")){
+                switch (GsonUtils.getAsString(rawJson, "message_type")){
                     case "group": {
                         //群聊消息类型
                         type = "groupMessage";

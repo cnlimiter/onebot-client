@@ -2,7 +2,6 @@ package cn.evole.onebot.client.connection;
 
 import cn.evole.onebot.client.core.Bot;
 import cn.evole.onebot.client.factory.ActionFactory;
-import cn.evole.onebot.client.util.TransUtils;
 import cn.evole.onebot.sdk.util.json.GsonUtils;
 import com.google.gson.JsonSyntaxException;
 import lombok.val;
@@ -50,7 +49,7 @@ public class WSClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         try {
-            val json = TransUtils.arrayToMsg(GsonUtils.parse(message));
+            val json = GsonUtils.parse(message);
             if (json.has(META_EVENT)) return;//过滤心跳
             log.debug("▌ §c接收到原始消息{}", json.toString());
             if (json.has(API_RESULT_KEY)) {
