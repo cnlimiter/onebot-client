@@ -1,13 +1,13 @@
 package cn.evole.onebot.client.connection;
 
+import cn.evole.onebot.client.core.Bot;
 import cn.evole.onebot.client.core.BotConfig;
 import cn.evole.onebot.client.factory.ActionFactory;
-import org.java_websocket.util.NamedThreadFactory;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ThreadFactory;
 
 import static cn.evole.onebot.client.connection.WSClient.log;
 
@@ -19,8 +19,9 @@ import static cn.evole.onebot.client.connection.WSClient.log;
  */
 public class ConnectFactory {
     private final ActionFactory actionFactory;
-    public WSClient ws;
-    public ThreadFactory wsThread;
+    @Getter public WSClient ws;
+    @Getter public Thread wsThread;
+    @Getter public Bot bot;
     /**
      *
      * @param config 配置
@@ -28,14 +29,14 @@ public class ConnectFactory {
      */
     public ConnectFactory(BotConfig config, BlockingQueue<String> queue){
         this.actionFactory = new ActionFactory(config);
-        this.wsThread = new NamedThreadFactory("WS");
         String url = getUrl(config);
         try {
-            this.wsThread.newThread(() -> {
-                ws = new WSClient(URI.create(url), queue, actionFactory);
-                ws.connect();
-            }).start();
-
+            this.wsThread = new Thread(() -> {
+                this.ws = new WSClient(URI.create(url), queue, actionFactory);
+                this.ws.connect();
+                this.bot = ws.createBot();
+            });
+            this.wsThread.start();
         }catch (Exception e){
             log.error("▌ §c与{}连接错误，请检查服务端是否开启 §a┈━═☆", url);
         }
@@ -66,7 +67,8 @@ public class ConnectFactory {
 
 
     public void stop(){
-        ws.close();
+        this.ws.close();
+        this.wsThread.stop();
     }
 
 
