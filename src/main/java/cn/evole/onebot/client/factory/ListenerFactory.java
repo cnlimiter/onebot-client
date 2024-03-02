@@ -89,7 +89,7 @@ public class ListenerFactory implements Runnable {
             return;
         }
         log.debug(String.format("接收到上报消息内容：%s", messageType));
-        Event bean = GsonUtils.fromJson(message, messageType);//将消息反序列化为对象
+        Event bean = GsonUtils.fromJson(message.toString(), messageType);//将消息反序列化为对象
         List<Listener<?>> executes = this.cache.get(messageType);
         if (this.cache.get(messageType) == null){
             executes = getMethod(messageType);

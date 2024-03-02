@@ -23,20 +23,14 @@ public class WebSocketClientTest {
     public static Logger logger = LoggerFactory.getLogger("test");
 
 
-    public static void main1(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         LinkedBlockingQueue<JsonObject> blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
         ConnectFactory service = new ConnectFactory(
-                new BotConfig("ws://127.0.0.1:8080"), blockingQueue);//创建websocket客户端
-        Bot bot = service.getWs().createBot();
+                new BotConfig("ws://192.168.1.25:5800"), blockingQueue);//创建websocket客户端
+        Bot bot = service.getBot();
         ListenerFactory dispatchers = new ListenerFactory(blockingQueue);//创建事件分发器
         GroupMessageListener groupMessageListener = new GroupMessageListener();//自定义监听规则
-        groupMessageListener.addHandler("test", new Handler<cn.evole.onebot.sdk.event.message.GroupMessageEvent>() {
-            @Override
-            public void handle(cn.evole.onebot.sdk.event.message.GroupMessageEvent groupMessage) {
-                bot.sendGroupMsg(337631140, groupMessage.getMessage(), false);
-
-            }
-        });//匹配关键字监听
+        groupMessageListener.addHandler("test", groupMessage -> bot.sendGroupMsg(337631140, groupMessage.getMessage(), false));//匹配关键字监听
         dispatchers.addListener(groupMessageListener);//注册监听
         dispatchers.addListener(new SimpleListener<PrivateMessageEvent>() {//私聊监听
             @Override

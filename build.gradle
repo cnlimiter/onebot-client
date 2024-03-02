@@ -49,6 +49,9 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.24'
     testImplementation 'com.google.code.gson:gson:2.8.9'
     testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.6'
+    testRuntimeOnly("org.apache.logging.log4j:log4j-api:2.19.0")
+    testRuntimeOnly("org.apache.logging.log4j:log4j-core:2.19.0")
+
 
     shadow "cn.evole.bot:OneBot-SDK:${sdk_version}"
     shadow 'org.java-websocket:Java-WebSocket:1.5.5'

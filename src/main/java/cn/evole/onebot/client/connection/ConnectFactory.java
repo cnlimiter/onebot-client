@@ -10,37 +10,26 @@ import org.jetbrains.annotations.NotNull;
 import java.net.URI;
 import java.util.concurrent.BlockingQueue;
 
-import static cn.evole.onebot.client.connection.WSClient.log;
-
 /**
  * Description:
  * Author: cnlimiter
  * Date: 2022/10/1 17:01
  * Version: 1.0
  */
+@Getter
 public class ConnectFactory {
-    private final ActionFactory actionFactory;
-    @Getter private WSClient ws;
-    @Getter private Thread wsThread;
-    @Getter private Bot bot;
+    private final WSClient ws;
+    private final Bot bot;
     /**
      *
      * @param config 配置
      * @param queue 队列消息
      */
     public ConnectFactory(BotConfig config, BlockingQueue<JsonObject> queue){
-        this.actionFactory = new ActionFactory(config);
         String url = getUrl(config);
-        try {
-            this.wsThread = new Thread(() -> {
-                this.ws = new WSClient(URI.create(url), queue, actionFactory);
-                this.ws.connect();
-            });
-            this.wsThread.start();
-            this.bot = ws.createBot();
-        }catch (Exception e){
-            log.error("▌ §c与{}连接错误，请检查服务端是否开启 §a┈━═☆", url);
-        }
+        this.ws = new WSClient(URI.create(url), queue, new ActionFactory(config));
+        this.ws.connect();
+        this.bot = ws.createBot();
     }
 
     @NotNull
@@ -69,7 +58,6 @@ public class ConnectFactory {
 
     public void stop(){
         this.ws.close();
-        this.wsThread.stop();
     }
 
 
