@@ -3,6 +3,7 @@ package cn.evole.onebot.client.factory;
 import cn.evole.onebot.client.interfaces.listener.EnableListener;
 import cn.evole.onebot.client.interfaces.listener.Listener;
 import cn.evole.onebot.client.util.ListenerUtils;
+import cn.evole.onebot.client.util.TransUtils;
 import cn.evole.onebot.sdk.event.Event;
 import cn.evole.onebot.sdk.util.json.GsonUtils;
 import com.google.gson.JsonObject;
@@ -29,10 +30,10 @@ public class ListenerFactory implements Runnable {
     protected Map<Class<? extends Event>, List<Listener<?>>> cache = new ConcurrentHashMap<>();
     //线程池 用于并发执行队列中的任务
     protected ExecutorService service;
-    protected BlockingQueue<String> queue;
+    protected BlockingQueue<JsonObject> queue;
     private boolean close = false;
 
-    public ListenerFactory(BlockingQueue<String> queue) {
+    public ListenerFactory(BlockingQueue<JsonObject> queue) {
         this.queue = queue;
     }
 
@@ -78,18 +79,17 @@ public class ListenerFactory implements Runnable {
      * 执行任务
      */
     protected void runTask() {
-        String message = this.getTask();//获取消息
-        if (message.equals("null")) {
+        JsonObject message = this.getTask();//获取消息
+        if (message.isJsonNull()) {
             log.debug("消息队列为空");
             return;
         }
-        JsonObject msg = GsonUtils.parse(message);
-        Class<? extends Event> messageType = ListenerUtils.parseEventType(msg, log);//获取消息对应的实体类型
+        Class<? extends Event> messageType = ListenerUtils.parseEventType(message, log);//获取消息对应的实体类型
         if (messageType == null) {
             return;
         }
         log.debug(String.format("接收到上报消息内容：%s", messageType));
-        Event bean = GsonUtils.fromJson(msg.toString(), messageType);//将消息反序列化为对象
+        Event bean = GsonUtils.fromJson(message, messageType);//将消息反序列化为对象
         List<Listener<?>> executes = this.cache.get(messageType);
         if (this.cache.get(messageType) == null){
             executes = getMethod(messageType);
@@ -99,7 +99,6 @@ public class ListenerFactory implements Runnable {
         for (Listener listener : executes) {
             listener.onMessage(bean);//调用监听方法
         }
-
     }
 
     /**
@@ -107,13 +106,13 @@ public class ListenerFactory implements Runnable {
      *
      * @return 任务
      */
-    protected String getTask() {
+    protected JsonObject getTask() {
         try {
             return this.queue.take();
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        return "null";
+        return new JsonObject();
     }
 
     /**

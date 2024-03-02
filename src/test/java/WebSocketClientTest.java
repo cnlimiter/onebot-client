@@ -6,6 +6,7 @@ import cn.evole.onebot.client.interfaces.handler.Handler;
 import cn.evole.onebot.client.interfaces.listener.SimpleListener;
 import cn.evole.onebot.client.instance.GroupMessageListener;
 import cn.evole.onebot.sdk.event.message.PrivateMessageEvent;
+import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,10 +24,10 @@ public class WebSocketClientTest {
 
 
     public static void main1(String[] args) throws Exception {
-        LinkedBlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
+        LinkedBlockingQueue<JsonObject> blockingQueue = new LinkedBlockingQueue<>();//使用队列传输数据
         ConnectFactory service = new ConnectFactory(
                 new BotConfig("ws://127.0.0.1:8080"), blockingQueue);//创建websocket客户端
-        Bot bot = service.ws.createBot();
+        Bot bot = service.getWs().createBot();
         ListenerFactory dispatchers = new ListenerFactory(blockingQueue);//创建事件分发器
         GroupMessageListener groupMessageListener = new GroupMessageListener();//自定义监听规则
         groupMessageListener.addHandler("test", new Handler<cn.evole.onebot.sdk.event.message.GroupMessageEvent>() {

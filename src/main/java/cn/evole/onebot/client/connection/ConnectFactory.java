@@ -3,6 +3,7 @@ package cn.evole.onebot.client.connection;
 import cn.evole.onebot.client.core.Bot;
 import cn.evole.onebot.client.core.BotConfig;
 import cn.evole.onebot.client.factory.ActionFactory;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,24 +20,24 @@ import static cn.evole.onebot.client.connection.WSClient.log;
  */
 public class ConnectFactory {
     private final ActionFactory actionFactory;
-    @Getter public WSClient ws;
-    @Getter public Thread wsThread;
-    @Getter public Bot bot;
+    @Getter private WSClient ws;
+    @Getter private Thread wsThread;
+    @Getter private Bot bot;
     /**
      *
      * @param config 配置
      * @param queue 队列消息
      */
-    public ConnectFactory(BotConfig config, BlockingQueue<String> queue){
+    public ConnectFactory(BotConfig config, BlockingQueue<JsonObject> queue){
         this.actionFactory = new ActionFactory(config);
         String url = getUrl(config);
         try {
             this.wsThread = new Thread(() -> {
                 this.ws = new WSClient(URI.create(url), queue, actionFactory);
                 this.ws.connect();
-                this.bot = ws.createBot();
             });
             this.wsThread.start();
+            this.bot = ws.createBot();
         }catch (Exception e){
             log.error("▌ §c与{}连接错误，请检查服务端是否开启 §a┈━═☆", url);
         }
