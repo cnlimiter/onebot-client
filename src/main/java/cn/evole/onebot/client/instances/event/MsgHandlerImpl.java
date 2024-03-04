@@ -43,12 +43,16 @@ public class MsgHandlerImpl implements MsgHandler {
         try {
             val json = TransUtils.arrayToMsg(GsonUtils.parse(msg));
             client.getLogger().debug(json.toString());
-            if (!META_HEART_BEAT.equals(GsonUtils.getAsString(json, META_EVENT))) {
-                client.getEventExecutor().execute(() -> {
-                    synchronized (lck) {
-                        event(json);
-                    }
-                });
+            try {
+                if (!META_HEART_BEAT.equals(GsonUtils.getAsString(json, META_EVENT))) {
+                    client.getEventExecutor().execute(() -> {
+                        synchronized (lck) {
+                            event(json);
+                        }
+                    });
+                }
+            } catch (NullPointerException e) {
+                throw new RuntimeException("catch NullPointerException: ", e);
             }
         } catch (
                 JsonSyntaxException e) {
@@ -72,10 +76,14 @@ public class MsgHandlerImpl implements MsgHandler {
 
     protected void executeAction(JsonObject json) {
         if (json.has(API_RESULT_KEY)) {
-            if (RESULT_STATUS_FAILED.equals(GsonUtils.getAsString(json, RESULT_STATUS_KEY))) {
-                client.getLogger().debug("▌ §c请求失败: {}", GsonUtils.getAsString(json, "wording"));
-            } else
-                client.getActionFactory().onReceiveActionResp(json);//请求执行
+            try {
+                if (RESULT_STATUS_FAILED.equals(GsonUtils.getAsString(json, RESULT_STATUS_KEY))) {
+                    client.getLogger().debug("▌ §c请求失败: {}", GsonUtils.getAsString(json, "wording"));
+                } else
+                    client.getActionFactory().onReceiveActionResp(json);//请求执行
+            } catch (NullPointerException e) {
+                throw new RuntimeException("catch NullPointerException: ", e);
+            }
         }
     }
 
