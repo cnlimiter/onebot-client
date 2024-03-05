@@ -62,9 +62,10 @@ public class WSClient extends WebSocketClient {
             } else if (!queue.offer(json)){//事件监听
                 log.error("▌ §c监听错误: {}", message);
             }
-        } catch (
-                JsonSyntaxException e) {
+        } catch (JsonSyntaxException e) {
             log.error("▌ §cJson语法错误:{}", message);
+        } catch (NullPointerException e) {
+            log.error("▌ §c意外的null:{}", e.getMessage());
         }
     }
 
