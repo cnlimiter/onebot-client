@@ -8,6 +8,7 @@ import cn.evole.onebot.client.instances.event.EventFactory;
 import cn.evole.onebot.client.instances.event.EventsBusImpl;
 import cn.evole.onebot.client.instances.event.MsgHandlerImpl;
 import cn.evole.onebot.client.interfaces.EventsBus;
+import cn.evole.onebot.client.interfaces.Listener;
 import cn.evole.onebot.client.internal.TestHandler;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
@@ -81,5 +82,9 @@ public final class OneBotClient {
         return false;
     }
 
-
+    public void registerEvents(Listener... listeners){
+        for (Listener c : listeners){
+            getEventsBus().register(c);
+        }
+    }
 }

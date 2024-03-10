@@ -41,7 +41,7 @@ public class EventFactory {
                     && eventType != WholeMessageEvent.class
                     && eventType != GuildMessageEvent.class
             ) {
-                client.getLogger().warn("▌ 命令系统尚未支持");
+                //client.getLogger().warn("▌ 命令系统尚未支持");
                 return null;
             }
         }
