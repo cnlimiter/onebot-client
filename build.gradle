@@ -53,7 +53,7 @@ dependencies {
 
     shadow "net.kyori:event-api:${eventbus_version}"
     shadow "net.kyori:event-method:${eventbus_version}"
-    shadow "cn.evole.bot:OneBot-SDK:${sdk_version}"
+    shadow "cn.evole.onebot:OneBot-SDK:${sdk_version}"
     shadow "org.java-websocket:Java-WebSocket:${websocket_version}"
 
     annotationProcessor("org.projectlombok:lombok:1.18.24")
