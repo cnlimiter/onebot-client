@@ -9,7 +9,7 @@ import cn.evole.onebot.sdk.action.ActionRaw;
 import cn.evole.onebot.sdk.entity.Anonymous;
 import cn.evole.onebot.sdk.entity.GuildMsgId;
 import cn.evole.onebot.sdk.entity.MsgId;
-import cn.evole.onebot.sdk.enums.ActionPathEnum;
+import cn.evole.onebot.sdk.enums.ActionType;
 import cn.evole.onebot.sdk.event.message.GroupMessageEvent;
 import cn.evole.onebot.sdk.response.contact.FriendInfoResp;
 import cn.evole.onebot.sdk.response.contact.LoginInfoResp;
@@ -18,7 +18,7 @@ import cn.evole.onebot.sdk.response.contact.UnidirectionalFriendListResp;
 import cn.evole.onebot.sdk.response.group.*;
 import cn.evole.onebot.sdk.response.guild.*;
 import cn.evole.onebot.sdk.response.misc.*;
-import cn.evole.onebot.sdk.util.json.GsonUtils;
+import cn.evole.onebot.sdk.util.GsonUtils;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -85,7 +85,7 @@ public class Bot {
      * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendPrivateMsg(long userId, String msg, boolean autoEscape) {
-        val action = ActionPathEnum.SEND_PRIVATE_MSG;
+        val action = ActionType.SEND_PRIVATE_MSG;
         val params = new JsonObject();
         params.addProperty("user_id", userId);
         params.addProperty("message", msg);
@@ -103,7 +103,7 @@ public class Bot {
      * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendPrivateMsg(long userId, JsonArray msg, boolean autoEscape) {
-        val action = ActionPathEnum.SEND_PRIVATE_MSG;
+        val action = ActionType.SEND_PRIVATE_MSG;
         val params = new JsonObject();
         params.addProperty("user_id", userId);
         params.add("message", msg);
@@ -121,7 +121,7 @@ public class Bot {
      * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendGroupMsg(long groupId, String msg, boolean autoEscape) {
-        val action = ActionPathEnum.SEND_GROUP_MSG;
+        val action = ActionType.SEND_GROUP_MSG;
         val params = new JsonObject();
         params.addProperty("group_id", groupId);
         params.addProperty("message", msg);
@@ -129,7 +129,6 @@ public class Bot {
 
         val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
-
     }
 
     /**
@@ -141,7 +140,7 @@ public class Bot {
      * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendGroupMsg(long groupId, JsonArray msg, boolean autoEscape) {
-        val action = ActionPathEnum.SEND_GROUP_MSG;
+        val action = ActionType.SEND_GROUP_MSG;
         val params = new JsonObject();
         params.addProperty("group_id", groupId);
         params.add("message", msg);
@@ -163,7 +162,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GuildMemberListResp}
      */
     public ActionData<GuildMemberListResp> getGuildMemberList(String guildId, String nextToken) {
-        val action = ActionPathEnum.GET_GUILD_LIST;
+        val action = ActionType.GET_GUILD_LIST;
         val params = new JsonObject();
             params.addProperty("guild_id", guildId);
             params.addProperty("next_token", nextToken);
@@ -182,7 +181,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GuildMsgId}
      */
     public ActionData<GuildMsgId> sendGuildMsg(String guildId, String channelId, String msg) {
-        val action = ActionPathEnum.SEND_GUILD_CHANNEL_MSG;
+        val action = ActionType.SEND_GUILD_CHANNEL_MSG;
         val params = new JsonObject();
             params.addProperty("guild_id", guildId);
             params.addProperty("channel_id", channelId);
@@ -202,7 +201,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GuildMsgId}
      */
     public ActionData<GuildMsgId> sendGuildMsg(String guildId, String channelId, JsonArray msg) {
-        val action = ActionPathEnum.SEND_GUILD_CHANNEL_MSG;
+        val action = ActionType.SEND_GUILD_CHANNEL_MSG;
         val params = new JsonObject();
         params.addProperty("guild_id", guildId);
         params.addProperty("channel_id", channelId);
@@ -221,7 +220,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GetGuildMsgResp}
      */
     public ActionData<GetGuildMsgResp> getGuildMsg(String guildMsgId, boolean noCache) {
-        val action = ActionPathEnum.GET_GUILD_MSG;
+        val action = ActionType.GET_GUILD_MSG;
         val params = new JsonObject();
             params.addProperty("message_id", guildMsgId);
             params.addProperty("no_cache", noCache);
@@ -237,7 +236,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GuildServiceProfileResp}
      */
     public ActionData<GuildServiceProfileResp> getGuildServiceProfile() {
-        val action = ActionPathEnum.GET_GUILD_SERVICE_PROFILE;
+        val action = ActionType.GET_GUILD_SERVICE_PROFILE;
         val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<GuildServiceProfileResp>>() {
         }.getType()) : null;
@@ -249,7 +248,7 @@ public class Bot {
      * @return {@link ActionList} of {@link GuildListResp}
      */
     public ActionList<GuildListResp> getGuildList() {
-        val action = ActionPathEnum.GET_GUILD_LIST;
+        val action = ActionType.GET_GUILD_LIST;
         val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionList<GuildListResp>>() {
         }.getType()) : null;
@@ -262,7 +261,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GuildMetaByGuestResp}
      */
     public ActionData<GuildMetaByGuestResp> getGuildMetaByGuest(String guildId) {
-        val action = ActionPathEnum.GET_GUILD_META_BY_GUEST;
+        val action = ActionType.GET_GUILD_META_BY_GUEST;
         val params = new JsonObject();
             params.addProperty("guild_id", guildId);
 
@@ -279,7 +278,7 @@ public class Bot {
      * @return {@link ActionList} of {@link ChannelInfoResp}
      */
     public ActionList<ChannelInfoResp> getGuildChannelList(String guildId, boolean noCache) {
-        val action = ActionPathEnum.GET_GUILD_CHANNEL_LIST;
+        val action = ActionType.GET_GUILD_CHANNEL_LIST;
         val params = new JsonObject();
             params.addProperty("guild_id", guildId);
             params.addProperty("no_cache", noCache);
@@ -297,7 +296,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GuildMemberProfileResp}
      */
     public ActionData<GuildMemberProfileResp> getGuildMemberProfile(String guildId, String userId) {
-        val action = ActionPathEnum.GET_GUILD_MEMBER_PROFILE;
+        val action = ActionType.GET_GUILD_MEMBER_PROFILE;
         val params = new JsonObject();
             params.addProperty("guild_id", guildId);
             params.addProperty("user_id", userId);
@@ -314,7 +313,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GetMsgResp}
      */
     public ActionData<GetMsgResp> getMsg(int msgId) {
-        val action = ActionPathEnum.GET_MSG;
+        val action = ActionType.GET_MSG;
         val params = new JsonObject();
             params.addProperty("message_id", msgId);
 
@@ -330,7 +329,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteMsg(int msgId) {
-        val action = ActionPathEnum.DELETE_MSG;
+        val action = ActionType.DELETE_MSG;
         val params = new JsonObject();
             params.addProperty("message_id", msgId);
 
@@ -347,7 +346,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupKick(long groupId, long userId, boolean rejectAddRequest) {
-        val action = ActionPathEnum.SET_GROUP_KICK;
+        val action = ActionType.SET_GROUP_KICK;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("user_id", userId);
@@ -366,7 +365,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupBan(long groupId, long userId, int duration) {
-        val action = ActionPathEnum.SET_GROUP_BAN;
+        val action = ActionType.SET_GROUP_BAN;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("user_id", userId);
@@ -384,7 +383,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupWholeBan(long groupId, boolean enable) {
-        val action = ActionPathEnum.SET_GROUP_WHOLE_BAN;
+        val action = ActionType.SET_GROUP_WHOLE_BAN;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("enable", enable);
@@ -402,7 +401,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAdmin(long groupId, long userId, boolean enable) {
-        val action = ActionPathEnum.SET_GROUP_ADMIN;
+        val action = ActionType.SET_GROUP_ADMIN;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("user_id", userId);
@@ -420,7 +419,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAnonymous(long groupId, boolean enable) {
-        val action = ActionPathEnum.SET_GROUP_ANONYMOUS;
+        val action = ActionType.SET_GROUP_ANONYMOUS;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("enable", enable);
@@ -438,7 +437,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupCard(long groupId, long userId, String card) {
-        val action = ActionPathEnum.SET_GROUP_CARD;
+        val action = ActionType.SET_GROUP_CARD;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("user_id", userId);
@@ -456,7 +455,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupName(long groupId, String groupName) {
-        val action = ActionPathEnum.SET_GROUP_NAME;
+        val action = ActionType.SET_GROUP_NAME;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("group_name", groupName);
@@ -473,7 +472,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupLeave(long groupId, boolean isDismiss) {
-        val action = ActionPathEnum.SET_GROUP_LEAVE;
+        val action = ActionType.SET_GROUP_LEAVE;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("is_dismiss", isDismiss);
@@ -492,7 +491,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupSpecialTitle(long groupId, long userId, String specialTitle, int duration) {
-        val action = ActionPathEnum.SET_GROUP_SPECIAL_TITLE;
+        val action = ActionType.SET_GROUP_SPECIAL_TITLE;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("user_id", userId);
@@ -512,7 +511,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setFriendAddRequest(String flag, boolean approve, String remark) {
-        val action = ActionPathEnum.SET_FRIEND_ADD_REQUEST;
+        val action = ActionType.SET_FRIEND_ADD_REQUEST;
         val params = new JsonObject();
             params.addProperty("flag", flag);
             params.addProperty("approve", approve);
@@ -532,7 +531,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAddRequest(String flag, String subType, boolean approve, String reason) {
-        val action = ActionPathEnum.SET_GROUP_ADD_REQUEST;
+        val action = ActionType.SET_GROUP_ADD_REQUEST;
         val params = new JsonObject();
             params.addProperty("flag", flag);
             params.addProperty("sub_type", subType);
@@ -549,7 +548,7 @@ public class Bot {
      * @return {@link ActionData} of @{@link LoginInfoResp}
      */
     public ActionData<LoginInfoResp> getLoginInfo() {
-        val action = ActionPathEnum.GET_LOGIN_INFO;
+        val action = ActionType.GET_LOGIN_INFO;
         val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<LoginInfoResp>>() {
         }.getType()) : null;
@@ -563,7 +562,7 @@ public class Bot {
      * @return {@link ActionData} of {@link StrangerInfoResp}
      */
     public ActionData<StrangerInfoResp> getStrangerInfo(long userId, boolean noCache) {
-        val action = ActionPathEnum.GET_STRANGER_INFO;
+        val action = ActionType.GET_STRANGER_INFO;
         val params = new JsonObject();
             params.addProperty("user_id", userId);
             params.addProperty("no_cache", noCache);
@@ -579,7 +578,7 @@ public class Bot {
      * @return {@link ActionList} of {@link FriendInfoResp}
      */
     public ActionList<FriendInfoResp> getFriendList() {
-        val action = ActionPathEnum.GET_FRIEND_LIST;
+        val action = ActionType.GET_FRIEND_LIST;
         val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionList<FriendInfoResp>>() {
         }.getType()) : null;
@@ -592,7 +591,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteFriend(long friendId) {
-        val action = ActionPathEnum.DELETE_FRIEND;
+        val action = ActionType.DELETE_FRIEND;
         val params = new JsonObject();
             params.addProperty("friend_id", friendId);
 
@@ -608,7 +607,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupInfoResp}
      */
     public ActionData<GroupInfoResp> getGroupInfo(long groupId, boolean noCache) {
-        val action = ActionPathEnum.GET_GROUP_INFO;
+        val action = ActionType.GET_GROUP_INFO;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("no_cache", noCache);
@@ -624,7 +623,7 @@ public class Bot {
      * @return {@link ActionList} of {@link GroupInfoResp}
      */
     public ActionList<GroupInfoResp> getGroupList() {
-        val action = ActionPathEnum.GET_GROUP_LIST;
+        val action = ActionType.GET_GROUP_LIST;
         val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionList<GroupInfoResp>>() {
         }.getType()) : null;
@@ -639,7 +638,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupMemberInfoResp}
      */
     public ActionData<GroupMemberInfoResp> getGroupMemberInfo(long groupId, long userId, boolean noCache) {
-        val action = ActionPathEnum.GET_GROUP_MEMBER_INFO;
+        val action = ActionType.GET_GROUP_MEMBER_INFO;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("user_id", userId);
@@ -657,7 +656,7 @@ public class Bot {
      * @return {@link ActionList} of {@link GroupMemberInfoResp}
      */
     public ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId) {
-        val action = ActionPathEnum.GET_GROUP_MEMBER_LIST;
+        val action = ActionType.GET_GROUP_MEMBER_LIST;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
 
@@ -674,7 +673,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupHonorInfoResp}
      */
     public ActionData<GroupHonorInfoResp> getGroupHonorInfo(long groupId, String type) {
-        val action = ActionPathEnum.GET_GROUP_HONOR_INFO;
+        val action = ActionType.GET_GROUP_HONOR_INFO;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("type", type);
@@ -690,7 +689,7 @@ public class Bot {
      * @return {@link ActionData} of {@link BooleanResp}
      */
     public ActionData<BooleanResp> canSendImage() {
-        val action = ActionPathEnum.CAN_SEND_IMAGE;
+        val action = ActionType.CAN_SEND_IMAGE;
         val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<BooleanResp>>() {
         }.getType()) : null;
@@ -702,7 +701,7 @@ public class Bot {
      * @return {@link ActionData} of {@link BooleanResp}
      */
     public ActionData<BooleanResp> canSendRecord() {
-        val action = ActionPathEnum.CAN_SEND_RECORD;
+        val action = ActionType.CAN_SEND_RECORD;
         val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<BooleanResp>>() {
         }.getType()) : null;
@@ -718,7 +717,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupPortrait(long groupId, String file, int cache) {
-        val action = ActionPathEnum.SET_GROUP_PORTRAIT;
+        val action = ActionType.SET_GROUP_PORTRAIT;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("file", file);
@@ -736,7 +735,7 @@ public class Bot {
      * @return {@link ActionData} of {@link CheckUrlSafelyResp}
      */
     public ActionData<CheckUrlSafelyResp> checkUrlSafely(String url) {
-        val action = ActionPathEnum.CHECK_URL_SAFELY;
+        val action = ActionType.CHECK_URL_SAFELY;
         val params = new JsonObject();
             params.addProperty("url", url);
 
@@ -753,7 +752,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw sendGroupNotice(long groupId, String content) {
-        val action = ActionPathEnum.SEN_GROUP_NOTICE;
+        val action = ActionType.SEN_GROUP_NOTICE;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("content", content);
@@ -769,7 +768,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupAtAllRemainResp}
      */
     public ActionData<GroupAtAllRemainResp> getGroupAtAllRemain(long groupId) {
-        val action = ActionPathEnum.GET_GROUP_AT_ALL_REMAIN;
+        val action = ActionType.GET_GROUP_AT_ALL_REMAIN;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
 
@@ -790,7 +789,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw uploadGroupFile(long groupId, String file, String name, String folder) {
-        val action = ActionPathEnum.UPLOAD_GROUP_FILE;
+        val action = ActionType.UPLOAD_GROUP_FILE;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("file", file);
@@ -812,7 +811,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw uploadGroupFile(long groupId, String file, String name) {
-        val action = ActionPathEnum.UPLOAD_GROUP_FILE;
+        val action = ActionType.UPLOAD_GROUP_FILE;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("file", file);
@@ -832,7 +831,7 @@ public class Bot {
      */
     public ActionRaw setGroupAnonymousBan(long groupId, Anonymous anonymous, boolean duration) {
         val gson = new GsonBuilder().create();
-        val action = ActionPathEnum.SET_GROUP_ANONYMOUS_BAN;
+        val action = ActionType.SET_GROUP_ANONYMOUS_BAN;
         String an = gson.toJson(anonymous, Anonymous.class);
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
@@ -852,7 +851,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAnonymousBan(long groupId, String flag, boolean duration) {
-        val action = ActionPathEnum.SET_GROUP_ANONYMOUS_BAN;
+        val action = ActionType.SET_GROUP_ANONYMOUS_BAN;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("flag", flag);
@@ -871,7 +870,7 @@ public class Bot {
      * @return {@link ActionData} of {@link DownloadFileResp}
      */
     public ActionData<DownloadFileResp> downloadFile(String url, int threadCount, String headers) {
-        val action = ActionPathEnum.DOWNLOAD_FILE;
+        val action = ActionType.DOWNLOAD_FILE;
         val params = new JsonObject();
             params.addProperty("url", url);
             params.addProperty("thread_count", threadCount);
@@ -889,7 +888,7 @@ public class Bot {
      * @return {@link ActionData} of {@link DownloadFileResp}
      */
     public ActionData<DownloadFileResp> downloadFile(String url) {
-        val action = ActionPathEnum.DOWNLOAD_FILE;
+        val action = ActionType.DOWNLOAD_FILE;
         val params = new JsonObject();
             params.addProperty("url", url);
 
@@ -908,7 +907,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupFilesResp}
      */
     public ActionData<GroupFilesResp> getGroupRootFiles(long groupId) {
-        val action = ActionPathEnum.GET_GROUP_ROOT_FILES;
+        val action = ActionType.GET_GROUP_ROOT_FILES;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
 
@@ -925,7 +924,7 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupFilesResp}
      */
     public ActionData<GroupFilesResp> getGroupFilesByFolder(long groupId, String folderId) {
-        val action = ActionPathEnum.GET_GROUP_FILES_BY_FOLDER;
+        val action = ActionType.GET_GROUP_FILES_BY_FOLDER;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.addProperty("folder_id", folderId);
@@ -955,7 +954,7 @@ public class Bot {
      * @return {@link ActionList} of {@link EssenceMsgResp}
      */
     public ActionList<EssenceMsgResp> getEssenceMsgList(long groupId) {
-        val action = ActionPathEnum.GET_ESSENCE_MSG_LIST;
+        val action = ActionType.GET_ESSENCE_MSG_LIST;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
 
@@ -971,7 +970,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setEssenceMsg(int msgId) {
-        val action = ActionPathEnum.SET_ESSENCE_MSG;
+        val action = ActionType.SET_ESSENCE_MSG;
         val params = new JsonObject();
             params.addProperty("message_id", msgId);
 
@@ -986,7 +985,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteEssenceMsg(int msgId) {
-        val action = ActionPathEnum.DELETE_ESSENCE_MSG;
+        val action = ActionType.DELETE_ESSENCE_MSG;
         val params = new JsonObject();
             params.addProperty("message_id", msgId);
 
@@ -1005,7 +1004,7 @@ public class Bot {
      * @return {@link  ActionRaw}
      */
     public ActionRaw setBotProfile(String nickname, String company, String email, String college, String personalNote) {
-        val action = ActionPathEnum.SET_QQ_PROFILE;
+        val action = ActionType.SET_QQ_PROFILE;
         val params = new JsonObject();
             params.addProperty("nickname", nickname);
             params.addProperty("company", company);
@@ -1027,7 +1026,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionData<MsgId> sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg) {
-        val action = ActionPathEnum.SEND_GROUP_FORWARD_MSG;
+        val action = ActionType.SEND_GROUP_FORWARD_MSG;
         val params = new JsonObject();
         params.addProperty("group_id", groupId);
         params.addProperty("messages", GsonUtils.getGson().toJson(msg, new TypeToken<List<Map<String, Object>>>() {
@@ -1046,7 +1045,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionData<MsgId> sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg) {
-        val action = ActionPathEnum.SEND_PRIVATE_FORWARD_MSG;
+        val action = ActionType.SEND_PRIVATE_FORWARD_MSG;
         val params = new JsonObject();
         params.addProperty("user_id", userId);
         params.addProperty("messages", GsonUtils.getGson().toJson(msg, new TypeToken<List<Map<String, Object>>>() {
@@ -1065,7 +1064,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionData<MsgId> sendForwardMsg(GroupMessageEvent event, List<Map<String, Object>> msg) {
-        val action = ActionPathEnum.SEND_FORWARD_MSG;
+        val action = ActionType.SEND_FORWARD_MSG;
         val params = new JsonObject();
         params.addProperty("messages", GsonUtils.getGson().toJson(msg, new TypeToken<List<Map<String, Object>>>() {
         }.getType()));
@@ -1092,7 +1091,7 @@ public class Bot {
      * @return {@link ActionData} of {@link WordSlicesResp}
      */
     public ActionData<WordSlicesResp> getWordSlices(String content) {
-        val action = ActionPathEnum.GET_WORD_SLICES;
+        val action = ActionType.GET_WORD_SLICES;
         val params = new JsonObject();
             params.addProperty("content", content);
 
@@ -1108,7 +1107,7 @@ public class Bot {
      * @return {@link ActionData} of {@link ClientsResp}
      */
     public ActionData<ClientsResp> getOnlineClients(boolean noCache) {
-        val action = ActionPathEnum.GET_ONLINE_CLIENTS;
+        val action = ActionType.GET_ONLINE_CLIENTS;
         val params = new JsonObject();
             params.addProperty("no_cache", noCache);
 
@@ -1124,7 +1123,7 @@ public class Bot {
      * @return {@link ActionData} of {@link OcrResp}
      */
     public ActionData<OcrResp> ocrImage(String image) {
-        val action = ActionPathEnum.OCR_IMAGE;
+        val action = ActionType.OCR_IMAGE;
         val params = new JsonObject();
             params.addProperty("image", image);
 
@@ -1142,7 +1141,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw uploadPrivateFile(long userId, String file, String name) {
-        val action = ActionPathEnum.UPLOAD_PRIVATE_FILE;
+        val action = ActionType.UPLOAD_PRIVATE_FILE;
         val params = new JsonObject();
             params.addProperty("user_id", userId);
             params.addProperty("file", file);
@@ -1159,7 +1158,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw sendGroupSign(long groupId) {
-        val action = ActionPathEnum.SEND_GROUP_SIGN;
+        val action = ActionType.SEND_GROUP_SIGN;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
 
@@ -1174,7 +1173,7 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteUnidirectionalFriend(long userId) {
-        val action = ActionPathEnum.DELETE_UNIDIRECTIONAL_FRIEND;
+        val action = ActionType.DELETE_UNIDIRECTIONAL_FRIEND;
         val params = new JsonObject();
             params.addProperty("user_id", userId);
 
@@ -1188,7 +1187,7 @@ public class Bot {
      * @return {@link ActionList} of {@link  UnidirectionalFriendListResp}
      */
     public ActionList<UnidirectionalFriendListResp> getUnidirectionalFriendList() {
-        val action = ActionPathEnum.GET_UNIDIRECTIONAL_FRIEND_LIST;
+        val action = ActionType.GET_UNIDIRECTIONAL_FRIEND_LIST;
         val result = actionFactory.action(channel, action, null);
         return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionList<UnidirectionalFriendListResp>>() {
         }.getType()) : null;

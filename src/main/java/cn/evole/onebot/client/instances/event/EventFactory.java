@@ -3,12 +3,12 @@ package cn.evole.onebot.client.instances.event;
 import cn.evole.onebot.client.OneBotClient;
 import cn.evole.onebot.client.utils.TransUtils;
 import cn.evole.onebot.sdk.event.Event;
+import cn.evole.onebot.sdk.event.EventMap;
 import cn.evole.onebot.sdk.event.message.GroupMessageEvent;
 import cn.evole.onebot.sdk.event.message.GuildMessageEvent;
 import cn.evole.onebot.sdk.event.message.PrivateMessageEvent;
 import cn.evole.onebot.sdk.event.message.WholeMessageEvent;
-import cn.evole.onebot.sdk.map.MessageMap;
-import cn.evole.onebot.sdk.util.json.GsonUtils;
+import cn.evole.onebot.sdk.util.GsonUtils;
 import com.google.gson.JsonObject;
 import lombok.val;
 
@@ -46,16 +46,17 @@ public class EventFactory {
             }
         }
 
-        return GsonUtils.fromJson(json, eventType);
+        return GsonUtils.fromJson(json.toString(), eventType);
     }
 
     protected Class<? extends Event> parseEventType(JsonObject rawJson) {
         String type;
+        if (!rawJson.has("post_type")) return null;
         String postType = GsonUtils.getAsString(rawJson, "post_type");
         switch (postType){
             case "message": {
                 //消息类型
-                val json = TransUtils.arrayToMsg(rawJson);
+                val json = TransUtils.arrayToString(rawJson);
                 switch (GsonUtils.getAsString(json, "message_type")){
                     case "group": {
                         //群聊消息类型
@@ -103,6 +104,6 @@ public class EventFactory {
             client.getLogger().warn("▌ 未知消息类型");
             return null;
         }
-        return MessageMap.messageMap.get(type);
+        return EventMap.messageMap.get(type);
     }
 }

@@ -2,7 +2,7 @@ package cn.evole.onebot.client.instances.action;
 
 import cn.evole.onebot.client.OneBotClient;
 import cn.evole.onebot.sdk.action.ActionPath;
-import cn.evole.onebot.sdk.util.json.GsonUtils;
+import cn.evole.onebot.sdk.util.GsonUtils;
 import com.google.gson.JsonObject;
 import lombok.val;
 import org.java_websocket.WebSocket;
@@ -49,17 +49,17 @@ public class ActionFactory {
     }
 
     /**
-     * @param channel Session
+     * @param ws Session
      * @param action  请求路径
      * @param params  请求参数
      * @return 请求结果
      */
-    public JsonObject action(WebSocket channel, ActionPath action, JsonObject params) {
-        if (!channel.isOpen()) {
+    public JsonObject action(WebSocket ws, ActionPath action, JsonObject params) {
+        if (!ws.isOpen()) {
             return null;
         }
         val reqJson = generateReqJson(action, params);
-        ActionSendUnit actionSendUnit = new ActionSendUnit(client, channel);
+        ActionSendUnit actionSendUnit = new ActionSendUnit(client, ws);
         apiCallbackMap.put(reqJson.get("echo").getAsString(), actionSendUnit);
         JsonObject result = new JsonObject();
         try {

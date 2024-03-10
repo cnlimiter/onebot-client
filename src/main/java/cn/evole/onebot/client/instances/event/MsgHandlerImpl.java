@@ -7,7 +7,7 @@ import cn.evole.onebot.sdk.event.Event;
 import cn.evole.onebot.sdk.event.message.GroupMessageEvent;
 import cn.evole.onebot.sdk.event.message.GuildMessageEvent;
 import cn.evole.onebot.sdk.event.message.PrivateMessageEvent;
-import cn.evole.onebot.sdk.util.json.GsonUtils;
+import cn.evole.onebot.sdk.util.GsonUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import lombok.val;
@@ -25,7 +25,7 @@ public class MsgHandlerImpl implements MsgHandler {
     private static final String RESULT_STATUS_KEY = "status";
     private static final String RESULT_STATUS_FAILED = "failed";
 
-    private static final String META_EVENT = "meta_event_type";
+    public static final String META_EVENT = "meta_event_type";
     private static final String META_HEART_BEAT = "heartbeat";
     private static final String META_LIFE_CYCLE = "lifecycle";
 
@@ -38,12 +38,14 @@ public class MsgHandlerImpl implements MsgHandler {
 
     @Override
     public void handle(String msg) {
-        if (msg == null) client.getLogger().warn("▌ §c消息体为空");
-        assert msg != null;
+        if (msg == null) {
+            client.getLogger().warn("▌ §c消息体为空");
+            return;
+        }
         try {
             JsonObject json = GsonUtils.parse(msg);
-            if (json.has(META_EVENT)) return;
-            val json2 = TransUtils.arrayToMsg(GsonUtils.parse(msg));
+            client.getLogger().info(json);
+            val json2 = TransUtils.arrayToString(GsonUtils.parse(msg));
             client.getLogger().info(json2.toString());
             client.getEventExecutor().execute(() -> {
                 synchronized (lck) {
@@ -74,7 +76,7 @@ public class MsgHandlerImpl implements MsgHandler {
     protected void executeAction(JsonObject json) {
         if (json.has(API_RESULT_KEY)) {
             if (RESULT_STATUS_FAILED.equals(GsonUtils.getAsString(json, RESULT_STATUS_KEY))) {
-                client.getLogger().debug("▌ §c请求失败: {}", GsonUtils.getAsString(json, "wording"));
+                client.getLogger().warn("▌ §c请求失败: {}", GsonUtils.getAsString(json, "wording"));
             } else
                 client.getActionFactory().onReceiveActionResp(json);//请求执行
         }

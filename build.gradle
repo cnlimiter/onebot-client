@@ -40,17 +40,16 @@ repositories {
 
 dependencies {
     compileOnly("org.projectlombok:lombok:1.18.24")
-    compileOnly("com.google.code.gson:gson:2.8.9")
+    compileOnly("com.google.code.gson:gson:2.10.1")
     compileOnly("org.jetbrains:annotations:24.0.1")
 
     compileOnly("org.apache.logging.log4j:log4j-api:2.19.0")
     compileOnly("org.apache.logging.log4j:log4j-core:2.19.0")
 
     testImplementation("org.apache.logging.log4j:log4j-core:2.19.0")
-    testImplementation("com.google.code.gson:gson:2.8.9")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
-    testImplementation("org.mockito:mockito-core:5.4.0")
-    testImplementation("org.projectlombok:lombok:1.18.24")
+    testImplementation("com.google.code.gson:gson:2.10.1")
+    testCompileOnly("org.projectlombok:lombok:1.18.24")
+    testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.6'
 
     shadow "net.kyori:event-api:${eventbus_version}"
     shadow "net.kyori:event-method:${eventbus_version}"

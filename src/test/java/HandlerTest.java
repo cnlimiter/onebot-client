@@ -19,15 +19,14 @@ public class HandlerTest implements Listener {
 
     public static void main(String[] args) throws InterruptedException {
         logger = LogManager.getLogger("OneBot Client1");
-        BotConfig config = new BotConfig("ws://127.0.0.1:9999");
-        client = new OneBotClient(config);
-        client.create();
-        //client.getEventsBus().register(new HandlerTest());
+        BotConfig config = new BotConfig("ws://192.168.1.25:5800");
+        client = OneBotClient.create(config).open();
+        client.getEventsBus().register(new HandlerTest());
     }
 
     @SubscribeEvent(internal = true)
     public void msg1(GroupMessageEvent event){
-        logger.info(event);
-        //System.out.println(event);
+        logger.info(event.getRawMessage());
+        System.out.println(event.getMessage());
     }
 }

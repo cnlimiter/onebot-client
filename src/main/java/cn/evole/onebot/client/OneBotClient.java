@@ -39,7 +39,7 @@ public final class OneBotClient {
     private WSClient ws = null;
     private Bot bot = null;
 
-    public OneBotClient(BotConfig config) {
+    private OneBotClient(BotConfig config) {
         this.logger = LogManager.getLogger("OneBot Client");
         this.config = config;
         this.eventsBus = new EventsBusImpl(this);
@@ -48,7 +48,11 @@ public final class OneBotClient {
         this.actionFactory = new ActionFactory(this);
     }
 
-    public void create() {
+    public static OneBotClient create(BotConfig config){
+        return new OneBotClient(config);
+    }
+
+    public OneBotClient open() {
         wsPool.execute(() -> {
             StringBuilder builder = new StringBuilder();
             String token = config.isAccessToken() ? config.getToken() : "";
@@ -62,8 +66,7 @@ public final class OneBotClient {
                 logger.error("▌ §c{}连接错误，请检查服务端是否开启 §a┈━═☆", URI.create(builder.toString()));
             }
         });
-
-        eventsBus.register(new TestHandler(this));
+        return this;
     }
 
     public boolean close() {
