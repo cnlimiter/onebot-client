@@ -43,8 +43,6 @@ public class MsgHandlerImpl implements MsgHandler {
             return;
         }
         try {
-            JsonObject json = GsonUtils.parse(msg);
-            client.getLogger().debug(json);
             val json2 = TransUtils.arrayToString(GsonUtils.parse(msg));
             client.getLogger().debug(json2.toString());
             client.getEventExecutor().execute(() -> {

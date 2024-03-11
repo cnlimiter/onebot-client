@@ -82,9 +82,10 @@ public final class OneBotClient {
         return false;
     }
 
-    public void registerEvents(Listener... listeners){
+    public OneBotClient registerEvents(Listener... listeners){
         for (Listener c : listeners){
             getEventsBus().register(c);
         }
+        return this;
     }
 }
