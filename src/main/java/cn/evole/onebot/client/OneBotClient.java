@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URI;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -71,15 +72,13 @@ public final class OneBotClient {
     }
 
     public boolean close() {
-        if (!wsPool.isShutdown()) {
-            wsPool.shutdown();
-            try {
-               return wsPool.awaitTermination(2, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                logger.error("▌ §c{} 打断关闭进程的未知错误 §a┈━═☆", e);
-            }
+        try {
+            ws.closeBlocking();
+        } catch (InterruptedException e) {
+            logger.error("▌ §c{} 打断关闭进程的未知错误 §a┈━═☆", e);
+            ws = null;
         }
-        return false;
+        return threadStop(eventExecutor) && threadStop(wsPool);
     }
 
     public OneBotClient registerEvents(Listener... listeners){
@@ -87,5 +86,19 @@ public final class OneBotClient {
             getEventsBus().register(c);
         }
         return this;
+    }
+
+    private boolean threadStop(ExecutorService service){
+        if (!service.isShutdown()) {
+            service.shutdown();
+            try {
+                return service.awaitTermination(2, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                logger.error("▌ §c{} 打断关闭进程的未知错误 §a┈━═☆", e);
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+        return false;
     }
 }
