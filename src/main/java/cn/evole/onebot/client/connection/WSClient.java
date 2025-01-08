@@ -19,6 +19,7 @@ public class WSClient extends WebSocketClient {
     public WSClient(OneBotClient client, URI uri) {
         super(uri);
         this.client = client;
+        this.setConnectionLostTimeout(0);
     }
 
     public Bot createBot(){
