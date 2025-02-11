@@ -52,10 +52,10 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.24")
     testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.6'
 
-    implementation "net.kyori:event-api:${eventbus_version}"
-    implementation "net.kyori:event-method:${eventbus_version}"
-    implementation "cn.evole.onebot:OneBot-SDK:${sdk_version}"
-    implementation "org.java-websocket:Java-WebSocket:${websocket_version}"
+    shadow "net.kyori:event-api:${eventbus_version}"
+    shadow "net.kyori:event-method:${eventbus_version}"
+    shadow "cn.evole.onebot:OneBot-SDK:${sdk_version}"
+    shadow "org.java-websocket:Java-WebSocket:${websocket_version}"
 
     annotationProcessor("org.projectlombok:lombok:1.18.24")
 
