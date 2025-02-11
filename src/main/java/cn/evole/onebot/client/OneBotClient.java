@@ -52,6 +52,10 @@ public final class OneBotClient {
         return new OneBotClient(config);
     }
 
+    public static OneBotClient create(BotConfig config, Listener... listeners){
+        return new OneBotClient(config).registerEvents(listeners);
+    }
+
     public OneBotClient open() {
         String token = config.getToken();
         long botId = config.getBotId();

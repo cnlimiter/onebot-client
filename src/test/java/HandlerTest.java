@@ -1,4 +1,5 @@
 import cn.evole.onebot.client.OneBotClient;
+import cn.evole.onebot.client.annotations.EventBus;
 import cn.evole.onebot.client.annotations.SubscribeEvent;
 import cn.evole.onebot.client.core.BotConfig;
 import cn.evole.onebot.client.interfaces.Listener;
@@ -13,6 +14,7 @@ import org.apache.logging.log4j.Logger;
  * @Description:
  */
 
+@EventBus
 public class HandlerTest implements Listener {
     static OneBotClient client;
     static Logger logger;
@@ -20,8 +22,8 @@ public class HandlerTest implements Listener {
     public static void main(String[] args) throws InterruptedException {
         logger = LogManager.getLogger("OneBot Client1");
         BotConfig config = new BotConfig("ws://192.168.1.25:5800", "123456");
-        client = OneBotClient.create(config).open();
-        client.getEventsBus().register(new HandlerTest());
+        client = OneBotClient.create(config, new HandlerTest()).open();
+        //client.getEventsBus().register(new HandlerTest());
     }
 
     @SubscribeEvent(internal = true)

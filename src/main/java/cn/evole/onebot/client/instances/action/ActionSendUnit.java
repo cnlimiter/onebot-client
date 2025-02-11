@@ -39,7 +39,7 @@ public class ActionSendUnit {
      */
     public JsonObject send(JsonObject req) throws InterruptedException {
         synchronized (channel) {
-            client.getLogger().debug(String.format("[Action] %s", req.toString()));
+            client.getLogger().debug("[Action] {}", req.toString());
             channel.send(req.toString());
         }
         synchronized (this) {

@@ -1,7 +1,7 @@
 package cn.evole.onebot.client.instances.action;
 
 import cn.evole.onebot.client.OneBotClient;
-import cn.evole.onebot.sdk.action.ActionPath;
+import cn.evole.onebot.sdk.action.misc.ActionPath;
 import cn.evole.onebot.sdk.util.GsonUtils;
 import com.google.gson.JsonObject;
 import lombok.val;

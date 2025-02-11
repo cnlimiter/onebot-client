@@ -32,8 +32,9 @@ configurations {
 
 
 repositories {
-    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+    mavenLocal()
     maven { url = "https://maven.nova-committee.cn/releases"}
+    maven { url = "https://repo.papermc.io/repository/maven-public/" }
     mavenCentral()
 }
 
@@ -51,10 +52,10 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok:1.18.24")
     testRuntimeOnly 'org.slf4j:slf4j-simple:2.0.6'
 
-    shadow "net.kyori:event-api:${eventbus_version}"
-    shadow "net.kyori:event-method:${eventbus_version}"
-    shadow "cn.evole.onebot:OneBot-SDK:${sdk_version}"
-    shadow "org.java-websocket:Java-WebSocket:${websocket_version}"
+    implementation "net.kyori:event-api:${eventbus_version}"
+    implementation "net.kyori:event-method:${eventbus_version}"
+    implementation "cn.evole.onebot:OneBot-SDK:${sdk_version}"
+    implementation "org.java-websocket:Java-WebSocket:${websocket_version}"
 
     annotationProcessor("org.projectlombok:lombok:1.18.24")
 
@@ -93,8 +94,8 @@ publishing {
     repositories {
         if (System.getenv('MAVEN_USERNAME') != null && System.getenv('MAVEN_PASSWORD') != null) {
             maven {
-                name 'release'
-                url = 'https://maven.nova-committee.cn/releases'
+                name 's3'
+                url = 'https://maven.nova-committee.cn/s3'
 
                 credentials {
                     username System.getenv('MAVEN_USERNAME')

@@ -1,9 +1,7 @@
 package cn.evole.onebot.client.utils;
 
 import org.java_websocket.WebSocket;
-import org.java_websocket.client.WebSocketClient;
-
-import java.util.Optional;
+import org.java_websocket.handshake.ServerHandshake;
 
 /**
  * @Project: onebot-client
@@ -13,13 +11,18 @@ import java.util.Optional;
  */
 public class ConnectionUtils {
 
-//    public static long parseSelfId(WebSocketClient session) {
-//        String selfIdStr = Optional.ofNullable(session.hea().getFirst("x-self-id"))
-//                .orElse((String) session.getAttributes().get("x-self-id"));
-//        try {
-//            return Long.parseLong(selfIdStr);
-//        } catch (NumberFormatException e) {
-//            return 0L;
-//        }
-//    }
+    /**
+     * 获取连接的 QQ 号
+     *
+     * @param session {@link WebSocket}
+     * @return QQ 号
+     */
+    public static long parseSelfId(ServerHandshake session) {
+        String selfIdStr = session.getFieldValue("x-self-id");
+        try {
+            return Long.parseLong(selfIdStr);
+        } catch (NumberFormatException e) {
+            return 0L;
+        }
+    }
 }

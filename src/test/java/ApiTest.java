@@ -1,6 +1,6 @@
 import cn.evole.onebot.client.OneBotClient;
 import cn.evole.onebot.client.core.BotConfig;
-import cn.evole.onebot.sdk.action.ActionData;
+import cn.evole.onebot.sdk.action.misc.ActionData;
 import cn.evole.onebot.sdk.entity.MsgId;
 import cn.evole.onebot.sdk.util.MsgUtils;
 
@@ -16,7 +16,7 @@ public class ApiTest {
 
 
     public static void main(String[] args) throws InterruptedException {
-        BotConfig config = new BotConfig("ws://192.168.1.25:5800");
+        BotConfig config = new BotConfig("ws://192.168.1.25:5800", "123456");
         OneBotClient client = OneBotClient.create(config).open();
 
         Thread.sleep(1000);

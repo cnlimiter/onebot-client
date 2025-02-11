@@ -2,15 +2,17 @@ package cn.evole.onebot.client.core;
 
 
 import cn.evole.onebot.client.instances.action.ActionFactory;
-import cn.evole.onebot.sdk.action.ActionData;
-import cn.evole.onebot.sdk.action.ActionList;
-import cn.evole.onebot.sdk.action.ActionPath;
-import cn.evole.onebot.sdk.action.ActionRaw;
+import cn.evole.onebot.sdk.action.BaseBot;
+import cn.evole.onebot.sdk.action.misc.ActionData;
+import cn.evole.onebot.sdk.action.misc.ActionList;
+import cn.evole.onebot.sdk.action.misc.ActionPath;
+import cn.evole.onebot.sdk.action.misc.ActionRaw;
 import cn.evole.onebot.sdk.entity.Anonymous;
+import cn.evole.onebot.sdk.entity.ArrayMsg;
 import cn.evole.onebot.sdk.entity.GuildMsgId;
 import cn.evole.onebot.sdk.entity.MsgId;
 import cn.evole.onebot.sdk.enums.ActionType;
-import cn.evole.onebot.sdk.event.message.GroupMessageEvent;
+import cn.evole.onebot.sdk.event.message.WholeMessageEvent;
 import cn.evole.onebot.sdk.response.contact.FriendInfoResp;
 import cn.evole.onebot.sdk.response.contact.LoginInfoResp;
 import cn.evole.onebot.sdk.response.contact.StrangerInfoResp;
@@ -19,6 +21,7 @@ import cn.evole.onebot.sdk.response.group.*;
 import cn.evole.onebot.sdk.response.guild.*;
 import cn.evole.onebot.sdk.response.misc.*;
 import cn.evole.onebot.sdk.util.GsonUtils;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -38,17 +41,16 @@ import java.util.Map;
  * Version: 1.0
  */
 @SuppressWarnings("unused")
-public class Bot {
+public class Bot implements BaseBot {
+    private final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+
+    private long selfId;
 
     private final ActionFactory actionFactory;
 
     @Getter
     @Setter
     private WebSocket channel;
-
-    @Getter
-    @Setter
-    private long botId;
 
     /**
      * @param channel                    {@link WebSocket}
@@ -59,15 +61,20 @@ public class Bot {
         this.actionFactory = actionFactory;
     }
 
+    @Override
+    public long getSelfId() {
+        return this.selfId;
+    }
+
     /**
      * 发送消息
      *
-     * @param event      {@link GroupMessageEvent}
+     * @param event      {@link WholeMessageEvent}
      * @param msg        要发送的内容
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
      * @return {@link ActionData} of {@link MsgId}
      */
-    public ActionData<MsgId> sendMsg(GroupMessageEvent event, String msg, boolean autoEscape) {
+    public ActionData<MsgId> sendMsg(WholeMessageEvent event, String msg, boolean autoEscape) {
         switch (event.getMessageType()) {
             case "private": {
                 return sendPrivateMsg(event.getUserId(), msg, autoEscape);
@@ -77,6 +84,11 @@ public class Bot {
             }
             default:
         }
+        return null;
+    }
+
+    @Override
+    public ActionData<MsgId> sendMsg(WholeMessageEvent wholeMessageEvent, List<ArrayMsg> list, boolean b) {
         return null;
     }
 
@@ -96,6 +108,21 @@ public class Bot {
         params.addProperty("auto_escape", autoEscape);
         val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
+    }
+
+    @Override
+    public ActionData<MsgId> sendPrivateMsg(long l, List<ArrayMsg> list, boolean b) {
+        return null;
+    }
+
+    @Override
+    public ActionData<MsgId> sendPrivateMsg(long l, long l1, String s, boolean b) {
+        return null;
+    }
+
+    @Override
+    public ActionData<MsgId> sendPrivateMsg(long l, long l1, List<ArrayMsg> list, boolean b) {
+        return null;
     }
 
     /**
@@ -133,6 +160,21 @@ public class Bot {
 
         val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
+    }
+
+    @Override
+    public ActionData<MsgId> sendGroupMsg(long groupId, List<ArrayMsg> msg, boolean autoEscape) {
+        return null;
+    }
+
+    @Override
+    public ActionData<MsgId> sendGroupMsg(long groupId, long userId, String msg, boolean autoEscape) {
+        return null;
+    }
+
+    @Override
+    public ActionData<MsgId> sendGroupMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape) {
+        return null;
     }
 
     /**
@@ -337,6 +379,17 @@ public class Bot {
         val params = new JsonObject();
             params.addProperty("message_id", msgId);
 
+        val result = actionFactory.action(channel, action, params);
+        return result != null ? GsonUtils.fromJson(result.toString(), ActionRaw.class) : null;
+    }
+
+    @Override
+    public ActionRaw deleteMsg(long groupId, long userId, int msgId) {
+        val action = ActionType.DELETE_MSG;
+        val params = new JsonObject();
+        params.addProperty("message_id", msgId);
+        params.addProperty("user_id", userId);
+        params.addProperty("group_id", groupId);
         val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtils.fromJson(result.toString(), ActionRaw.class) : null;
     }
@@ -669,6 +722,17 @@ public class Bot {
         }.getType()) : null;
     }
 
+    @Override
+    public ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId, boolean noCache) {
+        val action = ActionType.GET_GROUP_MEMBER_LIST;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("no_cache", noCache);
+        val result = actionFactory.action(channel, action, params);
+        return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionList<GroupMemberInfoResp>>() {
+        }.getType()) : null;
+    }
+
     /**
      * 获取群荣誉信息
      *
@@ -833,8 +897,7 @@ public class Bot {
      * @param duration  禁言时长，单位秒，无法取消匿名用户禁言
      * @return {@link ActionRaw}
      */
-    public ActionRaw setGroupAnonymousBan(long groupId, Anonymous anonymous, boolean duration) {
-        val gson = new GsonBuilder().create();
+    public ActionRaw setGroupAnonymousBan(long groupId, Anonymous anonymous, int duration) {
         val action = ActionType.SET_GROUP_ANONYMOUS_BAN;
         String an = gson.toJson(anonymous, Anonymous.class);
         val params = new JsonObject();
@@ -846,6 +909,7 @@ public class Bot {
         return result != null ? GsonUtils.fromJson(result.toString(),ActionRaw.class) : null;
     }
 
+
     /**
      * 群组匿名用户禁言
      *
@@ -854,7 +918,7 @@ public class Bot {
      * @param duration 禁言时长，单位秒，无法取消匿名用户禁言
      * @return {@link ActionRaw}
      */
-    public ActionRaw setGroupAnonymousBan(long groupId, String flag, boolean duration) {
+    public ActionRaw setGroupAnonymousBan(long groupId, String flag, int duration) {
         val action = ActionType.SET_GROUP_ANONYMOUS_BAN;
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
@@ -1059,6 +1123,7 @@ public class Bot {
         }.getType()) : null;
     }
 
+
     /**
      * 发送合并转发
      *
@@ -1067,7 +1132,7 @@ public class Bot {
      *              <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return {@link ActionRaw}
      */
-    public ActionData<MsgId> sendForwardMsg(GroupMessageEvent event, List<Map<String, Object>> msg) {
+    public ActionData<MsgId> sendForwardMsg(WholeMessageEvent event, List<Map<String, Object>> msg) {
         val action = ActionType.SEND_FORWARD_MSG;
         val params = new JsonObject();
         params.addProperty("messages", GsonUtils.getGson().toJson(msg, new TypeToken<List<Map<String, Object>>>() {
@@ -1196,4 +1261,245 @@ public class Bot {
         return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionList<UnidirectionalFriendListResp>>() {
         }.getType()) : null;
     }
+
+    /**
+     * 获取群文件资源链接
+     *
+     * @param groupId 群号
+     * @param fileId  文件ID
+     * @param busId   文件类型
+     * @return result {@link ActionData} of {@link UrlResp}
+     */
+    @Override
+    public ActionData<UrlResp> getGroupFileUrl(long groupId, String fileId, int busId) {
+        val action = ActionType.GET_GROUP_FILE_URL;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("file_id", fileId);
+        params.addProperty("busid", busId);
+        val result = actionFactory.action(channel, action, null);
+        return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionList<UrlResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 获取群文件资源链接
+     *
+     * @param groupId 群号
+     * @param fileId  文件ID
+     * @param busId   文件类型
+     * @return result {@link ActionData} of {@link UrlResp}
+     */
+    @Override
+    public ActionData<GroupFilesResp> getFile(long groupId, String fileId, int busId) {
+        val action = ActionType.GET_GROUP_FILE_URL;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("file_id", fileId);
+        params.addProperty("busid", busId);
+        val result = actionFactory.action(channel, action, null);
+        return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<GroupFilesResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 创建群文件文件夹
+     *
+     * @param groupId    群号
+     * @param folderName 文件夹名
+     * @return result {@link ActionRaw}
+     */
+    @Override
+    public ActionRaw createGroupFileFolder(long groupId, String folderName) {
+        val action = ActionType.CREATE_GROUP_FILE_FOLDER;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("name", folderName);
+        // 仅能在根目录创建文件夹
+        params.addProperty("parent_id", "/");
+        val result = actionFactory.action(channel, action, params);
+        return result != null ? GsonUtils.fromJson(result.toString(), ActionRaw.class) : null;
+    }
+
+    /**
+     * 删除群文件文件夹
+     *
+     * @param groupId  群号
+     * @param folderId 文件夹ID
+     * @return result {@link ActionRaw}
+     */
+    @Override
+    public ActionRaw deleteGroupFileFolder(long groupId, String folderId) {
+        val action = ActionType.DELETE_GROUP_FOLDER;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("folder_id", folderId);
+        val result = actionFactory.action(channel, action, params);
+        return result != null ? GsonUtils.fromJson(result.toString(), ActionRaw.class) : null;
+    }
+
+    /**
+     * 删除群文件
+     *
+     * @param groupId 群号
+     * @param fileId  文件ID
+     * @param busId   文件类型
+     * @return result {@link ActionRaw}
+     */
+    @Override
+    public ActionRaw deleteGroupFile(long groupId, String fileId, int busId) {
+        val action = ActionType.DELETE_GROUP_FILE;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("file_id", fileId);
+        params.addProperty("busid", busId);
+        val result = actionFactory.action(channel, action, params);
+        return result != null ? GsonUtils.fromJson(result.toString(), ActionRaw.class) : null;
+    }
+
+    /**
+     * 好友点赞
+     *
+     * @param userId 目标用户
+     * @param times  点赞次数（每个好友每天最多 10 次，机器人为 Super VIP 则提高到 20次）
+     * @return result {@link ActionRaw}
+     */
+    @Override
+    public ActionRaw sendLike(long userId, int times) {
+        val action = ActionType.SEND_LIKE;
+        val params = new JsonObject();
+        params.addProperty("user_id", userId);
+        params.addProperty("times", times);
+        val result = actionFactory.action(channel, action, null);
+        return result != null ? GsonUtils.fromJson(result.toString(), ActionRaw.class) : null;
+    }
+
+    @Override
+    public GetStatusResp getStatus() {
+        val action = ActionType.GET_STATUS;
+        val result = actionFactory.action(channel, action, null);
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<GetStatusResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 获取状态
+     *
+     * @return result {@link GetStatusResp}
+     */
+    @Override
+    public ActionData<VersionInfoResp> getVersionInfo() {
+        val action = ActionType.GET_VERSION_INFO;
+        val result = actionFactory.action(channel, action, null);
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<VersionInfoResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 获取收藏表情
+     *
+     * @return 表情的下载 URL
+     */
+    @Override
+    public ActionList<String> fetchCustomFace() {
+        val action = ActionType.FETCH_CUSTOM_FACE;
+        val result = actionFactory.action(channel, action, null);
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionList<String>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 获取合并转发消息Id
+     *
+     * @param msg 自定义转发消息 (可使用 BotUtils.generateForwardMsg() 方法创建)
+     * @return result {@link ActionData} of {@link String} 合并转发的消息Id
+     */
+    @Override
+    public ActionData<String> sendForwardMsg(List<Map<String, Object>> msg) {
+        val action = ActionType.SEND_FORWARD_MSG;
+        val params = new JsonObject();
+        /**
+         * 将msg转成string存到params中
+         */
+        //params.addProperty("messages", msg);
+        val result = actionFactory.action(channel, action, null);
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<String>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 设置群消息表情回应
+     *
+     * @param groupId 群号
+     * @param msgId   消息 ID
+     * @param code    表情 ID
+     * @param isAdd   添加/取消 回应
+     * @return result {@link ActionRaw}
+     */
+    @Override
+    public ActionRaw setGroupReaction(long groupId, int msgId, String code, boolean isAdd) {
+        val action = ActionType.SET_GROUP_REACTION;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("message_id", msgId);
+        params.addProperty("code", code);
+        params.addProperty("is_add", isAdd);
+        val result = actionFactory.action(channel, action, null);
+        return result != null ? GsonUtils.fromJson(result.toString(), ActionRaw.class) : null;
+    }
+
+
+    /**
+     * 自定义请求
+     *
+     * @param action 请求路径
+     * @param params 请求参数
+     * @return result {@link ActionData}
+     */
+    @SuppressWarnings("rawtypes")
+    public ActionData customRequest(ActionPath action, Map<String, Object> params) {
+        val result = actionFactory.action(channel, action, GsonUtils.parse(gson.toJson(params)));
+        return result != null ? GsonUtils.fromJson(result.toString(), ActionData.class) : null;
+    }
+
+    /**
+     * 自定义请求
+     *
+     * @param action 请求路径
+     * @param params 请求参数
+     * @return result {@link ActionData}
+     */
+    public <T> ActionData<T> customRequest(ActionPath action, Map<String, Object> params, Class<T> clazz) {
+        val result = actionFactory.action(channel, action, GsonUtils.parse(gson.toJson(params)));
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<T>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 自定义请求
+     *
+     * @param action 请求路径
+     * @param params 请求参数
+     * @return result {@link ActionData}
+     */
+    @SuppressWarnings("rawtypes")
+    public ActionData customRawRequest(ActionPath action, Map<String, Object> params) {
+        val result = actionFactory.action(channel, action, GsonUtils.parse(gson.toJson(params)));
+        return result != null ? GsonUtils.fromJson(result.toString(), ActionData.class) : null;
+    }
+
+    /**
+     * 自定义请求
+     *
+     * @param action 请求路径
+     * @param params 请求参数
+     * @return result {@link ActionData}
+     */
+    public <T> ActionData<T> customRawRequest(ActionPath action, Map<String, Object> params, Class<T> clazz) {
+        val result = actionFactory.action(channel, action, GsonUtils.parse(gson.toJson(params)));
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<T>>() {
+        }.getType()) : null;
+    }
+
+
 }
