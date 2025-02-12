@@ -58,12 +58,26 @@ public class MsgHandlerImpl implements MsgHandler {
 
     }
 
+    /**
+     * 处理接收到的JSON对象形式的事件
+     * 此方法首先尝试根据JSON对象执行一个动作，然后根据JSON对象创建一个事件对象
+     * 如果创建的事件对象不为空，则根据条件判断是否执行命令，或将其发布到事件总线
+     *
+     * @param json 包含事件信息的JSON对象
+     */
     protected void event(JsonObject json) {
+        // 执行与JSON对象关联的动作
         executeAction(json);
+
+        // 根据JSON对象创建Event实例
         Event event = client.getEventFactory().createEvent(json);
+
+        // 如果创建的事件为空，则直接返回，不再进行后续处理
         if (event == null) {
             return;
         }
+
+        // 尝试执行命令，如果执行失败，则将事件发布到事件总线上
         if (!executeCommand(event)) {
             client.getEventsBus().callEvent(event);
         }
@@ -71,12 +85,23 @@ public class MsgHandlerImpl implements MsgHandler {
 
 
 
+    /**
+     * 执行一个JSON对象所代表的动作
+     * 此方法主要用于处理和执行通过JSON对象描述的动作，根据JSON中的内容决定如何处理
+     *
+     * @param json 包含动作信息的JSON对象
+     */
     protected void executeAction(JsonObject json) {
+        // 检查JSON对象中是否包含API结果键
         if (json.has(API_RESULT_KEY)) {
+            // 判断动作执行结果是否为失败
             if (RESULT_STATUS_FAILED.equals(GsonUtils.getAsString(json, RESULT_STATUS_KEY))) {
+                // 如果执行失败，记录警告日志
                 client.getLogger().warn("▌ §c请求失败: {}", GsonUtils.getAsString(json, "wording"));
-            } else
+            } else {
+                // 如果执行成功，调用动作工厂的回调方法处理接收到的动作响应
                 client.getActionFactory().onReceiveActionResp(json);//请求执行
+            }
         }
     }
 

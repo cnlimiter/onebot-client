@@ -5,10 +5,10 @@ import com.google.gson.JsonObject;
 import org.java_websocket.WebSocket;
 
 /**
- * Description:
- * Author: cnlimiter
- * Date: 2022/9/14 15:06
- * Version: 1.0
+ * @Project: onebot-client
+ * @Author: cnlimiter
+ * @CreateTime: 2022/9/14 15:06
+ * @Description:
  */
 public class ActionSendUnit {
     private final OneBotClient client;

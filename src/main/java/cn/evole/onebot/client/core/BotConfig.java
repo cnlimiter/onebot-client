@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Description:
- * Author: cnlimiter
- * Date: 2022/10/1 17:05
- * Version: 1.0
+ * @Project: onebot-client
+ * @Author: cnlimiter
+ * @CreateTime: 2022/10/1 17:05
+ * @Description:
  */
 @Data
 @NoArgsConstructor
@@ -26,17 +26,18 @@ public class BotConfig {
     @Expose
     private boolean reconnect = true;//是否开启重连
     @Expose
-    private int maxReconnectAttempts = 20;//重连间隔
-
+    private int reconnectInterval = 5;//重连间隔
+    @Expose
+    private int reconnectMaxTimes = 3;//重连次数
     public BotConfig(String url, String token){
-        this(url, token, 0, false, true, 20);
+        this(url, token, 0, false, true, 5, 3);
     }
 
     public BotConfig(String url){
-        this(url, "", 0, false, true, 20);
+        this(url, "", 0, false, true, 5, 3);
     }
 
     public BotConfig(String url, long botId){
-        this(url, "", botId, false, true, 20);
+        this(url, "", botId, false, true, 5, 3);
     }
 }

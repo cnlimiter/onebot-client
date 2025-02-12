@@ -57,18 +57,12 @@ public final class OneBotClient {
     }
 
     public OneBotClient open() {
-        String token = config.getToken();
-        long botId = config.getBotId();
         StringBuilder url = new StringBuilder();
         wsPool.execute(() -> {
             url.append(config.getUrl())
-                    .append(config.isMirai() ? "/all?verifyKey=" + token + "&qq=" + config.getBotId() : "");
+                    .append(config.isMirai() ? "/all?verifyKey=" + config.getToken() + "&qq=" + config.getBotId() : "");
             try {
                 ws = new WSClient(this, URI.create(url.toString()));
-                ws.addHeader("User-Agent", "OneBot Client v4");
-                ws.addHeader("x-client-role", "Universal"); // koishi-adapter-onebot 需要这个字段
-                if (!config.getToken().isEmpty()) ws.addHeader("Authorization", "Bearer " + token);
-                if (config.getBotId() != 0) ws.addHeader("X-Self-ID", String.valueOf(botId));
                 ws.connect();
                 bot = ws.createBot();
             } catch (Exception e) {

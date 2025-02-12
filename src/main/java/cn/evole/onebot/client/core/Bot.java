@@ -21,8 +21,6 @@ import cn.evole.onebot.sdk.response.group.*;
 import cn.evole.onebot.sdk.response.guild.*;
 import cn.evole.onebot.sdk.response.misc.*;
 import cn.evole.onebot.sdk.util.GsonUtils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -35,15 +33,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Description:
- * Author: cnlimiter
- * Date: 2022/9/14 15:19
- * Version: 1.0
+ * @Project: onebot-client
+ * @Author: cnlimiter
+ * @CreateTime: 2022/9/14 15:19
+ * @Description:
  */
 @SuppressWarnings("unused")
 public class Bot implements BaseBot {
-    private final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-
     private long selfId;
 
     private final ActionFactory actionFactory;
@@ -75,20 +71,31 @@ public class Bot implements BaseBot {
      * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendMsg(WholeMessageEvent event, String msg, boolean autoEscape) {
-        switch (event.getMessageType()) {
-            case "private": {
-                return sendPrivateMsg(event.getUserId(), msg, autoEscape);
-            }
-            case "group": {
-                return sendGroupMsg(event.getGroupId(), msg, autoEscape);
-            }
-            default:
+        if ("private".equals(event.getMessageType())) {
+            return sendPrivateMsg(event.getUserId(), msg, autoEscape);
+        }
+        if ("group".equals(event.getMessageType())) {
+            return sendGroupMsg(event.getGroupId(), msg, autoEscape);
         }
         return null;
     }
 
+    /**
+     * 发送消息
+     *
+     * @param event      {@link WholeMessageEvent}
+     * @param msg        消息链
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
     @Override
-    public ActionData<MsgId> sendMsg(WholeMessageEvent wholeMessageEvent, List<ArrayMsg> list, boolean b) {
+    public ActionData<MsgId> sendMsg(WholeMessageEvent event, List<ArrayMsg> msg, boolean autoEscape) {
+        if ("private".equals(event.getMessageType())) {
+            return sendPrivateMsg(event.getUserId(), msg, autoEscape);
+        }
+        if ("group".equals(event.getMessageType())) {
+            return sendGroupMsg(event.getGroupId(), msg, autoEscape);
+        }
         return null;
     }
 
@@ -110,19 +117,65 @@ public class Bot implements BaseBot {
         return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
     }
 
+    /**
+     * 发送私聊消息
+     *
+     * @param userId     对方 QQ 号
+     * @param msg        消息链
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
     @Override
-    public ActionData<MsgId> sendPrivateMsg(long l, List<ArrayMsg> list, boolean b) {
-        return null;
+    public ActionData<MsgId> sendPrivateMsg(long userId, List<ArrayMsg> msg, boolean autoEscape) {
+        val action = ActionType.SEND_PRIVATE_MSG;
+        val params = new JsonObject();
+        params.addProperty("user_id", userId);
+        params.addProperty("message", GsonUtils.getGson().toJson(msg));
+        params.addProperty("auto_escape", autoEscape);
+        val result = actionFactory.action(channel, action, params);
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
     }
 
+    /**
+     * 临时会话
+     *
+     * @param groupId    主动发起临时会话群号(机器人本身必须是管理员/群主)
+     * @param userId     对方 QQ 号
+     * @param msg        要发送的内容
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
     @Override
-    public ActionData<MsgId> sendPrivateMsg(long l, long l1, String s, boolean b) {
-        return null;
+    public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, String msg, boolean autoEscape) {
+        val action = ActionType.SEND_PRIVATE_MSG;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("user_id", userId);
+        params.addProperty("message", msg);
+        params.addProperty("auto_escape", autoEscape);
+        val result = actionFactory.action(channel, action, params);
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
     }
 
+    /**
+     * 临时会话
+     *
+     * @param groupId    主动发起临时会话群号(机器人本身必须是管理员/群主)
+     * @param userId     对方 QQ 号
+     * @param msg        消息链
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
     @Override
-    public ActionData<MsgId> sendPrivateMsg(long l, long l1, List<ArrayMsg> list, boolean b) {
-        return null;
+    public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape) {
+        val action = ActionType.SEND_PRIVATE_MSG;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("user_id", userId);
+        params.addProperty("message", GsonUtils.getGson().toJson(msg));
+        params.addProperty("auto_escape", autoEscape);
+        val result = actionFactory.action(channel, action, params);
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
     }
 
     /**
@@ -157,24 +210,43 @@ public class Bot implements BaseBot {
         params.addProperty("group_id", groupId);
         params.addProperty("message", msg);
         params.addProperty("auto_escape", autoEscape);
-
         val result = actionFactory.action(channel, action, params);
         return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
     }
 
     @Override
     public ActionData<MsgId> sendGroupMsg(long groupId, List<ArrayMsg> msg, boolean autoEscape) {
-        return null;
+        val action = ActionType.SEND_GROUP_MSG;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("message", GsonUtils.getGson().toJson(msg));
+        params.addProperty("auto_escape", autoEscape);
+        val result = actionFactory.action(channel, action, params);
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
     }
 
     @Override
     public ActionData<MsgId> sendGroupMsg(long groupId, long userId, String msg, boolean autoEscape) {
-        return null;
+        val action = ActionType.SEND_GROUP_MSG;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("user_id", userId);
+        params.addProperty("message", msg);
+        params.addProperty("auto_escape", autoEscape);
+        val result = actionFactory.action(channel, action, params);
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
     }
 
     @Override
     public ActionData<MsgId> sendGroupMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape) {
-        return null;
+        val action = ActionType.SEND_GROUP_MSG;
+        val params = new JsonObject();
+        params.addProperty("group_id", groupId);
+        params.addProperty("user_id", userId);
+        params.addProperty("message", GsonUtils.getGson().toJson(msg));
+        params.addProperty("auto_escape", autoEscape);
+        val result = actionFactory.action(channel, action, params);
+        return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {}.getType()) : null;
     }
 
     /**
@@ -899,7 +971,7 @@ public class Bot implements BaseBot {
      */
     public ActionRaw setGroupAnonymousBan(long groupId, Anonymous anonymous, int duration) {
         val action = ActionType.SET_GROUP_ANONYMOUS_BAN;
-        String an = gson.toJson(anonymous, Anonymous.class);
+        String an = GsonUtils.getGson().toJson(anonymous);
         val params = new JsonObject();
             params.addProperty("group_id", groupId);
             params.add("anonymous", GsonUtils.parse(an));
@@ -1097,8 +1169,7 @@ public class Bot implements BaseBot {
         val action = ActionType.SEND_GROUP_FORWARD_MSG;
         val params = new JsonObject();
         params.addProperty("group_id", groupId);
-        params.addProperty("messages", GsonUtils.getGson().toJson(msg, new TypeToken<List<Map<String, Object>>>() {
-        }.getType()));
+        params.addProperty("messages", GsonUtils.getGson().toJson(msg));
         val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {
         }.getType()) : null;
@@ -1116,8 +1187,7 @@ public class Bot implements BaseBot {
         val action = ActionType.SEND_PRIVATE_FORWARD_MSG;
         val params = new JsonObject();
         params.addProperty("user_id", userId);
-        params.addProperty("messages", GsonUtils.getGson().toJson(msg, new TypeToken<List<Map<String, Object>>>() {
-        }.getType()));
+        params.addProperty("messages", GsonUtils.getGson().toJson(msg));
         val result = actionFactory.action(channel, action, params);
         return result != null ?  GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<MsgId>>() {
         }.getType()) : null;
@@ -1135,8 +1205,7 @@ public class Bot implements BaseBot {
     public ActionData<MsgId> sendForwardMsg(WholeMessageEvent event, List<Map<String, Object>> msg) {
         val action = ActionType.SEND_FORWARD_MSG;
         val params = new JsonObject();
-        params.addProperty("messages", GsonUtils.getGson().toJson(msg, new TypeToken<List<Map<String, Object>>>() {
-        }.getType()));
+        params.addProperty("messages", GsonUtils.getGson().toJson(msg));
 
         switch (event.getMessageType()) {
             case "private": {
@@ -1458,7 +1527,7 @@ public class Bot implements BaseBot {
      */
     @SuppressWarnings("rawtypes")
     public ActionData customRequest(ActionPath action, Map<String, Object> params) {
-        val result = actionFactory.action(channel, action, GsonUtils.parse(gson.toJson(params)));
+        val result = actionFactory.action(channel, action, GsonUtils.parse(GsonUtils.getGson().toJson(params)));
         return result != null ? GsonUtils.fromJson(result.toString(), ActionData.class) : null;
     }
 
@@ -1470,7 +1539,7 @@ public class Bot implements BaseBot {
      * @return result {@link ActionData}
      */
     public <T> ActionData<T> customRequest(ActionPath action, Map<String, Object> params, Class<T> clazz) {
-        val result = actionFactory.action(channel, action, GsonUtils.parse(gson.toJson(params)));
+        val result = actionFactory.action(channel, action, GsonUtils.parse(GsonUtils.getGson().toJson(params, clazz)));
         return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<T>>() {
         }.getType()) : null;
     }
@@ -1484,7 +1553,7 @@ public class Bot implements BaseBot {
      */
     @SuppressWarnings("rawtypes")
     public ActionData customRawRequest(ActionPath action, Map<String, Object> params) {
-        val result = actionFactory.action(channel, action, GsonUtils.parse(gson.toJson(params)));
+        val result = actionFactory.action(channel, action, GsonUtils.parse(GsonUtils.getGson().toJson(params)));
         return result != null ? GsonUtils.fromJson(result.toString(), ActionData.class) : null;
     }
 
@@ -1496,7 +1565,7 @@ public class Bot implements BaseBot {
      * @return result {@link ActionData}
      */
     public <T> ActionData<T> customRawRequest(ActionPath action, Map<String, Object> params, Class<T> clazz) {
-        val result = actionFactory.action(channel, action, GsonUtils.parse(gson.toJson(params)));
+        val result = actionFactory.action(channel, action, GsonUtils.parse(GsonUtils.getGson().toJson(params, clazz)));
         return result != null ? GsonUtils.fromJson(result.toString(), new TypeToken<ActionData<T>>() {
         }.getType()) : null;
     }

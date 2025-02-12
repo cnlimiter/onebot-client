@@ -12,10 +12,10 @@ import java.util.Map;
 
 
 /**
- * Description:
- * Author: cnlimiter
- * Date: 2022/9/14 15:05
- * Version: 1.0
+ * @Project: onebot-client
+ * @Author: cnlimiter
+ * @CreateTime: 2022/9/14 15:05
+ * @Description:
  */
 
 public class ActionFactory {

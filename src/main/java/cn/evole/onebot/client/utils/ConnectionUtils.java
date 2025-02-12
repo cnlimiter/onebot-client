@@ -1,7 +1,7 @@
 package cn.evole.onebot.client.utils;
 
 import org.java_websocket.WebSocket;
-import org.java_websocket.handshake.ServerHandshake;
+import org.java_websocket.handshake.ClientHandshake;
 
 /**
  * @Project: onebot-client
@@ -17,7 +17,7 @@ public class ConnectionUtils {
      * @param session {@link WebSocket}
      * @return QQ 号
      */
-    public static long parseSelfId(ServerHandshake session) {
+    public static long parseSelfId(ClientHandshake session) {
         String selfIdStr = session.getFieldValue("x-self-id");
         try {
             return Long.parseLong(selfIdStr);
