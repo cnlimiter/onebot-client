@@ -74,6 +74,7 @@ public final class OneBotClient {
 
     public boolean close() {
         try {
+            ws.getTimer().cancel();
             ws.closeBlocking();
         } catch (InterruptedException e) {
             logger.error("▌ §c{} 打断关闭进程的未知错误 §a┈━═☆", e);
